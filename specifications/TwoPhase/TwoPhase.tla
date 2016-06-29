@@ -67,42 +67,6 @@ vBar == (p + c) % 2
 A == INSTANCE Alternate WITH v <- vBar
 
 (***************************************************************************)
-(* Our proof requires the following simple fact about the modulus operator *)
-(* % .  It is proved using a decision procedure, as explained in the       *)
-(* comments in the TLAProofRules module.                                   *)
-(*                                                                         *)
-(* Often, a proof requires a simple mathematical fact that cannot be       *)
-(* deduced so easily by the Proof System.  In fact, the Proof System may   *)
-(* not even know some basic mathematical facts needed to prove it.         *)
-(* Proving the needed fact is a fun exercise for those who enjoy that sort *)
-(* of thing.  It's painful for the rest of us.  Eventually, we will have a *)
-(* library with lots of useful facts that you can import.  But such a      *)
-(* library is unlikely ever to contain all the simple mathematical         *)
-(* theoresm that you'll ever need.                                         *)
-(*                                                                         *)
-(* We are primarily interested in making the Proof System useful to people *)
-(* who want to prove things about algorithms and systems, not for those    *)
-(* who want to prove theorems of mathematics.  (We hope that the Proof     *)
-(* System will be good for doing those proofs too, but we are not doing    *)
-(* anything special to achieve this.)  We expect that most users will      *)
-(* simply assume these mathematical facts.  However, it's dangerous to     *)
-(* assume the truth of a theorem without checking it in some way.  It's    *)
-(* easy to make a mistake and write a false theorem, and assuming a false  *)
-(* theorem could allow you to prove other false theorems.  So, you should  *)
-(* use the TLC model checker to check any fact that you assume.  In most   *)
-(* cases, TLC won't be able to check the actual theorem.  But it should be *)
-(* able to do a good enough job to catch errors.  For example, TLC can't   *)
-(* check that a theorem is true for all integers.  However, in practice we *)
-(* expect that you will be able to check it for a large enough subset of   *)
-(* the integers to gain sufficient confidence that the theorem really is   *)
-(* true.  In this case, TLC could check the actual theorem.                *)
-(***************************************************************************)
-THEOREM Mod2 == \A i \in {0,1} : /\ (i + 1) % 2 = 1 - i
-                                 /\ (i + 0) % 2 = i
-BY SimpleArithmetic
-
-
-(***************************************************************************)
 (* The following theorem is a standard proof that one specification        *)
 (* implements (the safety part of) another specification under a           *)
 (* refinement mapping.  In fact, the temporal leaf proofs will be exactly  *)
@@ -115,24 +79,18 @@ THEOREM Implementation == Spec => A!Spec
   <2>1. Init => Inv
     BY DEF Init, Inv
   <2>2. Inv /\ [Next]_<<p, c, x>> => Inv'
-    BY Mod2 DEF Inv, Next, ProducerStep, ConsumerStep
-  <2>3. QED
-\*    <3>1. Inv /\ [][Next]_<<p, c, x>> => []Inv
-\*       BY <2>2, Inv1 
-\*    <3>2. QED
-\*       BY <3>1, <2>1 DEF Spec
-   PROOF OMITTED  \* TLAPS does not yet do temporal-logic reasoning
+    BY Z3 DEF Inv, Next, ProducerStep, ConsumerStep
+  <2>. QED
+    BY <2>1, <2>2, PTL DEF Spec
 <1>2. QED
   <2>1. Init => A!Init
-    BY Mod2 DEF Init, A!Init, vBar
+    BY Z3 DEF Init, A!Init, vBar
   <2>2. Inv /\ [Next]_<<p, c, x>>  => [A!Next]_<<vBar, x>>
-    BY Mod2 DEF Inv, Next, ProducerStep, ConsumerStep, A!Next, vBar
-  <2>3. []Inv /\ [][Next]_<<p, c, x>>  => [][A!Next]_<<vBar, x>>  
-\*     BY <2>2, StepSimulation
-     PROOF OMITTED  \* TLAPS does not yet do temporal-logic reasoning
-  <2>4. QED
-\*     BY <2>1, <2>3, <1>1 DEF Spec, A!Spec
-     PROOF OMITTED  \* TLAPS does not yet do temporal-logic reasoning
+    BY Z3 DEF Inv, Next, ProducerStep, ConsumerStep, A!Next, vBar
+  <2>3. []Inv /\ [][Next]_<<p, c, x>>  => [][A!Next]_<<vBar, x>>
+    BY <2>1, <2>2, PTL
+  <2>. QED
+    BY <2>1, <2>3, <1>1, PTL DEF Spec, A!Spec
   
 ==============================================================
 \* Generated at Sat Oct 31 03:15:55 PDT 2009
