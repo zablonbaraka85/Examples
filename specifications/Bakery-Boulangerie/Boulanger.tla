@@ -356,10 +356,10 @@ Inv == /\ TypeOK
 (* (Propositional Temporal Logic) backend prover.                          *)
 (***************************************************************************)
 THEOREM Spec => []MutualExclusion
-<1> USE N \in Nat DEFS Procs, Inv, TypeOK, Before, \prec, ProcSet 
+<1> USE N \in Nat DEFS Procs, TypeOK, Before, \prec, ProcSet 
 
 <1>1. Init => Inv
-  BY SMT DEF Init
+  BY SMT DEF Init, Inv
   
 <1>2. Inv /\ [Next]_vars => Inv'
   <2> SUFFICES ASSUME Inv,
@@ -369,66 +369,157 @@ THEOREM Spec => []MutualExclusion
   <2>1. ASSUME NEW self \in Procs,
                ncs(self)
         PROVE  Inv'
-    BY <2>1, Z3 DEF Next,  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    BY <2>1, Z3 DEF ncs, Inv
   <2>2. ASSUME NEW self \in Procs,
                e1(self)
         PROVE  Inv'
-    BY <2>2, Z3 DEF Next,  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    <3>. /\ pc[self] = "e1"
+         /\ UNCHANGED << num, nxt, previous >>
+      BY <2>2 DEF e1
+    <3>1. CASE /\ flag' = [flag EXCEPT ![self] = ~ flag[self]]
+               /\ pc' = [pc EXCEPT ![self] = "e1"]
+               /\ UNCHANGED <<unchecked, max>>
+      BY <3>1 DEF Inv
+    <3>2. CASE /\ flag' = [flag EXCEPT ![self] = TRUE]
+               /\ unchecked' = [unchecked EXCEPT ![self] = Procs \ {self}]
+               /\ max' = [max EXCEPT ![self] = 0]
+               /\ pc' = [pc EXCEPT ![self] = "e2"]
+      BY <3>2 DEF Inv
+    <3>. QED  BY <3>1, <3>2, <2>2 DEF e1
   <2>3. ASSUME NEW self \in Procs,
                e2(self)
         PROVE  Inv'
-    BY <2>3, Z3 DEF Next,  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    <3>. /\ pc[self] = "e2"
+         /\ UNCHANGED << num, flag, nxt, previous >>
+      BY <2>3 DEF e2
+    <3>1. ASSUME NEW  i \in unchecked[self],
+                 unchecked' = [unchecked EXCEPT ![self] = unchecked[self] \ {i}],
+                 num[i] > max[self],
+                 max' = [max EXCEPT ![self] = num[i]],
+                 pc' = [pc EXCEPT ![self] = "e2"]
+          PROVE  Inv'
+      BY <3>1, Z3 DEF Inv
+    <3>2. ASSUME NEW  i \in unchecked[self],
+                 unchecked' = [unchecked EXCEPT ![self] = unchecked[self] \ {i}],
+                 ~(num[i] > max[self]),
+                 max' = max,
+                 pc' = [pc EXCEPT ![self] = "e2"]
+          PROVE  Inv'
+      BY <3>2, Z3 DEF Inv
+    <3>3. CASE /\ unchecked[self] = {}
+               /\ pc' = [pc EXCEPT ![self] = "e3"]
+               /\ UNCHANGED << unchecked, max >>
+      BY <3>3, Z3 DEF Inv
+    <3>. QED  BY <3>1, <3>2, <3>3, <2>3 DEF e2
   <2>4. ASSUME NEW self \in Procs,
                e3(self)
         PROVE  Inv'
-    BY <2>4, Z3 DEF Next,  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    <3>. /\ pc[self] = "e3"
+         /\ UNCHANGED << flag, unchecked, max, nxt, previous >>
+      BY <2>4 DEF e3
+    <3>1. CASE /\ \E k \in Nat: num' = [num EXCEPT ![self] = k]
+               /\ pc' = [pc EXCEPT ![self] = "e3"]
+      BY <3>1, Z3 DEF Inv
+    <3>2. CASE /\ num' = [num EXCEPT ![self] = max[self] + 1]
+               /\ pc' = [pc EXCEPT ![self] = "e4"]
+      BY <3>2, Z3 DEF Inv
+    <3>. QED  BY <3>1, <3>2, <2>4 DEF e3
   <2>5. ASSUME NEW self \in Procs,
                e4(self)
         PROVE  Inv'
-    <3> ASSUME NEW i \in Procs', (pc[i] \in {"w1", "w2"})' 
-        PROVE  (\A j \in (Procs \ unchecked[i]) \ {i} : Before(i, j))' 
-      <4>1. CASE self = i
-        <5> SUFFICES ASSUME NEW j \in ((Procs \ unchecked[i]) \ {i})'
-                     PROVE  Before(i, j)'
-          OBVIOUS
-        <5>1. CASE i < j
-          BY <4>1, <5>1, <2>5, Z3 DEF  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
-        <5>2. CASE j =< i
-          <6> unchecked'[i] = 1..(i-1)
-             BY  <4>1, <2>5  DEF e4
-          <6> QED
-          BY <4>1, <2>5, Z3 DEF  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
-        <5>3. QED
-          BY <5>1, <5>2
-      <4>2. CASE self # i
-        BY <4>2, <2>5, Z3 DEF  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
-      <4>3. QED
-        BY <4>1, <4>2
-    <3> QED
-      BY <2>5, Z3 DEF   ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    <3>. /\ pc[self] = "e4"
+         /\ UNCHANGED << num, max, nxt, previous >>
+      BY <2>5 DEF e4
+    <3>1. CASE /\ flag' = [flag EXCEPT ![self] = ~ flag[self]]
+               /\ pc' = [pc EXCEPT ![self] = "e4"]
+               /\ UNCHANGED unchecked
+      BY <3>1, Z3 DEF Inv
+    <3>2. CASE /\ flag' = [flag EXCEPT ![self] = FALSE]
+               /\ num[self] = 1
+               /\ unchecked' = [unchecked EXCEPT ![self] = 1..(self-1)]
+               /\ pc' = [pc EXCEPT ![self] = "w1"]
+      BY <3>2, Z3 DEF Inv
+    <3>3. CASE /\ flag' = [flag EXCEPT ![self] = FALSE]
+               /\ num[self] # 1
+               /\ unchecked' = [unchecked EXCEPT ![self] = Procs \ {self}]
+               /\ pc' = [pc EXCEPT ![self] = "w1"]
+      BY <3>3, Z3 DEF Inv
+    <3>. QED  BY <3>1, <3>2, <3>3, <2>5 DEF e4
   <2>6. ASSUME NEW self \in Procs,
                w1(self)
         PROVE  Inv'
-    BY <2>6, Z3 DEF Next,  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    <3>. /\ pc[self] = "w1"
+         /\ UNCHANGED << num, flag, unchecked, max >>
+      BY <2>6 DEF w1
+    <3>1. CASE /\ unchecked[self] # {}
+               /\ \E i \in unchecked[self]:
+                            nxt' = [nxt EXCEPT ![self] = i]
+               /\ ~ flag[nxt'[self]]
+               /\ previous' = [previous EXCEPT ![self] = -1]
+               /\ pc' = [pc EXCEPT ![self] = "w2"]
+      BY <3>1, Z3 DEF Inv
+    <3>2. CASE /\ unchecked[self] = {}
+               /\ pc' = [pc EXCEPT ![self] = "cs"]
+               /\ UNCHANGED << nxt, previous >>
+      BY <3>2, Z3 DEF Inv
+    <3>. QED  BY <3>1, <3>2, <2>6 DEF w1
   <2>7. ASSUME NEW self \in Procs,
                w2(self)
         PROVE  Inv'
-    BY <2>7, Z3 DEF  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    <3>. /\ pc[self] = "w2"
+         /\ UNCHANGED << num, flag, max, nxt >>
+      BY <2>7 DEF w2
+    <3>1. CASE /\ \/ num[nxt[self]] = 0
+                  \/ <<num[self], self>> \prec <<num[nxt[self]], nxt[self]>>
+                  \/  /\ previous[self] # -1
+                      /\ num[nxt[self]] # previous[self]
+               /\ unchecked' = [unchecked EXCEPT ![self] = unchecked[self] \ {nxt[self]}]
+               /\ unchecked'[self] = {}
+               /\ pc' = [pc EXCEPT ![self] = "cs"]
+               /\ UNCHANGED previous
+      BY <3>1, Z3 DEF Inv
+    <3>2. CASE /\ \/ num[nxt[self]] = 0
+                  \/ <<num[self], self>> \prec <<num[nxt[self]], nxt[self]>>
+                  \/  /\ previous[self] # -1
+                      /\ num[nxt[self]] # previous[self]
+               /\ unchecked' = [unchecked EXCEPT ![self] = unchecked[self] \ {nxt[self]}]
+               /\ unchecked'[self] # {}
+               /\ pc' = [pc EXCEPT ![self] = "w1"]
+               /\ UNCHANGED previous
+      BY <3>2, Z3 DEF Inv
+    <3>3. CASE /\ ~ \/ num[nxt[self]] = 0
+                    \/ <<num[self], self>> \prec <<num[nxt[self]], nxt[self]>>
+                    \/  /\ previous[self] # -1
+                        /\ num[nxt[self]] # previous[self]
+               /\ previous' = [previous EXCEPT ![self] = num[nxt[self]]]
+               /\ pc' = [pc EXCEPT ![self] = "w2"]
+               /\ UNCHANGED unchecked
+      BY <3>3, Z3 DEF Inv
+    <3>. QED  BY <3>1, <3>2, <3>3, <2>7 DEF w2
   <2>8. ASSUME NEW self \in Procs,
                cs(self)
         PROVE  Inv'
-    BY <2>8, Z3 DEF Next,  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    BY <2>8, Z3 DEF cs, Inv
   <2>9. ASSUME NEW self \in Procs,
                exit(self)
         PROVE  Inv'
-    BY <2>9, Z3 DEF Next,  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    <3>. /\ pc[self] = "exit"
+         /\ UNCHANGED << flag, unchecked, max, nxt, previous >>
+      BY <2>9 DEF exit
+    <3>1. CASE /\ \E k \in Nat: num' = [num EXCEPT ![self] = k]
+               /\ pc' = [pc EXCEPT ![self] = "exit"]
+      BY <3>1, Z3 DEF Inv
+    <3>2. CASE /\ num' = [num EXCEPT ![self] = 0]
+               /\ pc' = [pc EXCEPT ![self] = "ncs"]
+      BY <3>2, Z3 DEF Inv
+    <3>. QED  BY <3>1, <3>2, <2>9 DEF exit
   <2>10. CASE UNCHANGED vars
-    BY <2>10, Z3 DEF Next,  ncs, p, e1, e2, e3, e4, w1, w2, cs, exit, vars
+    BY <2>10, Z3 DEF vars, Inv
   <2>11. QED
     BY <2>1, <2>10, <2>2, <2>3, <2>4, <2>5, <2>6, <2>7, <2>8, <2>9 DEF Next, p
   
 <1>3. Inv => MutualExclusion
-  BY SMT DEF MutualExclusion
+  BY SMT DEF Inv, MutualExclusion
   
 <1>4. QED
   BY <1>1, <1>2, <1>3, PTL DEF Spec
@@ -439,5 +530,7 @@ DeadlockFree == (\E i \in Procs : Trying(i)) ~> (\E i \in Procs : InCS(i))
 StarvationFree == \A i \in Procs : Trying(i) ~> InCS(i)
 =============================================================================
 \* Modification History
+\* Last modified Thu May 24 20:03:58 CEST 2018 by merz
+\* Last modified Thu May 24 13:49:22 CEST 2018 by merz
 \* Last modified Tue Jul 21 17:55:23 PDT 2015 by lamport
 \* Created Thu Nov 21 15:54:32 PST 2013 by lamport
