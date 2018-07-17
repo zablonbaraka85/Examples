@@ -1,7 +1,7 @@
  
-## Welcome to TLA<sup>+</sup> Benchmarks 
+## Welcome to TLA<sup>+</sup> Examples 
 
-The page **TLA<sup>+</sup> Benchmarks** is a library of TLA<sup>+</sup> specifications for distributed algorithms. The webpage supplies the TLA<sup>+</sup> community with:
+The page **TLA<sup>+</sup> Examples** is a library of TLA<sup>+</sup> specifications for distributed algorithms. The webpage supplies the TLA<sup>+</sup> community with:
 
 - A comprehensive library of the TLA<sup>+</sup> specifications that are available today, in order to provide an overview of how to specify an algorithm in TLA<sup>+</sup>.
 - A comprehensive list of references and other interesting information for each problem. 
@@ -75,7 +75,8 @@ Do you have your own case study that you like to share with the community? Send 
 
 
 ## License
-Every benchmark has initially the MIT license. If the authors want to change the license, we can create a special one for their benchmarks.  
+
+The repository is under the MIT license. However, we can upload your benchmarks under your license.
 
 ## Support or Contact
 
