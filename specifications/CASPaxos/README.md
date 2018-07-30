@@ -1,4 +1,4 @@
-#### CASPaxos
+#### <a href="https://github.com/tschottdorf/caspaxos-tla">CASPaxos</a>
 - Specification's authors: Tobias Schottdorf
 - Original paper: <a href="http://rystsov.info/2017/02/15/simple-consensus.html">In search of a simple consensus algorithm</a>
 - Extended modules: Int, FinSet
