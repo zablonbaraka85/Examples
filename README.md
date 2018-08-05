@@ -36,7 +36,7 @@ Do you have your own case study that you like to share with the community? Send 
 | 22 | DataPort | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/DataPort">Dataport protocal 505.89PT, only PDF files (Biggs & Noriaki, 2016)</a> | Geoffrey Biggs, Noriaki Ando |  |  | Int, Seq | 
 | 23 | detector_chan96 | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/detector_chan96">Chandra and Toueg’s eventually perfect failure detector</a> | Thanh Hai Tran, Igor Konnov, Josef Widder |  | &#10004; | Int, FinSet | 
 | 24 | DieHard | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/DieHard">A very elementary example based on a puzzle from a movie</a> |  |  | &#10004; | Nat | 
-| 25 | dijkstra-mutex | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/dijkstra-mutex">Mutual exclusion algorithm (Dijkstra, 1965)</a> | Markus Alexander Kuppe |  | &#10004; | Int | 
+| 25 | dijkstra-mutex | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/dijkstra-mutex">Mutual exclusion algorithm (Dijkstra, 1965)</a> |  |  | &#10004; | Int | 
 | 26 | diskpaxos | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/diskpaxos">Disk Paxos (Gafni & Lamport, 2003)</a> | Giuliano Losa |  | &#10004; | Int | 
 | 27 | egalitarian-paxos | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/egalitarian-paxos">Leaderless replication protocol based on Paxos (Moraru et al., 2013)</a> | Iulian Moraru |  | &#10004; | Nat, FinSet | 
 | 28 | ewd840 | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/ewd840">Termination detection in a ring (Dijkstra et al., 1986)</a> | Stephan Merz | &#10004; | &#10004; | Nat | 
@@ -67,8 +67,8 @@ Do you have your own case study that you like to share with the community? Send 
 | 53 | SyncConsensus | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/SyncConsensus">Synchronized round consensus algorithm (Demirbas)</a> | Murat Demirbas |  | &#10004; | FinSet, Int, Seq | 
 | 54 | Termination | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/Termination">Channel counting algorithm (Mattern, 1987)</a> | Giuliano Losa |  | &#10004; | FinSet, Bags, Nat | 
 | 55 | Tla-tortoise-hare | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/Tla-tortoise-hare">Robert Floyd's cycle detection algorithm</a> | Lorin Hochstein |  | &#10004; | Nat | 
-| 56 | tower_of_hanoi | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/tower_of_hanoi">The well-known Towers of Hanoi puzzle.</a> |  |  | &#10004; | FinSet, Nat, Bit | 
-| 57 | transaction_commit | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/transaction_commit">Consensus on transaction commit (Gray & Lamport, 2006)</a> | Vasily Kuznetsov, Markus Alexander Kuppe |  | &#10004; | Int | 
+| 56 | tower_of_hanoi | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/tower_of_hanoi">The well-known Towers of Hanoi puzzle.</a> | Markus Kuppe |  | &#10004; | FinSet, Nat, Bit | 
+| 57 | transaction_commit | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/transaction_commit">Consensus on transaction commit (Gray & Lamport, 2006)</a> | Leslie Lamport |  | &#10004; | Int | 
 | 58 | TransitiveClosure | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/TransitiveClosure">The transitive closure of a relation</a> |  |  | &#10004; | FinSet, Int, Seq | 
 | 59 | TwoPhase | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/TwoPhase">Two-phase handshaking</a> | Stephan Merz |  | &#10004; | Nat | 
 | 60 | VoldemortKV | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/VoldemortKV">Voldemort distributed key value store</a> | Murat Demirbas |  | &#10004; | FinSet, Int, Seq | 
