@@ -4,5 +4,4 @@
 - Extended modules: FinSet, Int, Seq
 - Computation models: clean crashes
 - Some properties checked with TLC: nontriviality, consistency, stability
-
-
+- <a href="https://losa.fr/research/leaderless/">TLA<sup>+</sup> files</a>

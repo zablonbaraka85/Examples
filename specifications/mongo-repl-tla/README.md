@@ -4,5 +4,6 @@
 - Extended modules: FinSet, Nat, Seq
 - Computation models: crashes, lost/duplicated messages
 - Some properties checked with TLC: NeverRollbackCommitted
+- <a href="https://github.com/visualzhou/mongo-repl-tla">TLA<sup>+</sup> files</a>
 
 

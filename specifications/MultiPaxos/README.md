@@ -4,5 +4,4 @@
 - Extended modules: Int, FinSet
 - Computation models: crashes, lost/duplicated messages
 - Some properties checked with TLC: correctness
-
-
+- <a href="https://github.com/nano-o/MultiPaxos">TLA<sup>+</sup> files</a>

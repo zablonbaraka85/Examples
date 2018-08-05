@@ -4,5 +4,4 @@
 - Extended modules: Nat, FinSet
 - Computation models: crashes
 - Some properties checked with TLC: nontriviality, stability, consistency
-
-
+- <a href="https://github.com/efficient/epaxos">TLA<sup>+</sup> files</a>

@@ -4,5 +4,4 @@
 - Extended modules: Int
 - Computation models: crashes, inaccessibility
 - Some properties checked with TLC: SynodSpec
-
-
+- <a href="https://github.com/nano-o/MultiPaxos/blob/master/DiskPaxos.tla">TLA<sup>+</sup> files</a>

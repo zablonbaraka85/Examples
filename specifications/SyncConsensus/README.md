@@ -4,5 +4,4 @@
 - Extended modules: FinSet, Int, Seq
 - Computation models: crashes
 - Some properties checked with TLC: agreement, Syncterm, Term
-
-
+- <a href="https://github.com/muratdem/PlusCal-examples/tree/master/SyncConsensus">TLA<sup>+</sup> files</a>

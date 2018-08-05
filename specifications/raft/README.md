@@ -4,5 +4,4 @@
 - Extended modules: FinSet, Nat, Seq
 - Computation models: crashes, lost/duplicated messages
 - Some properties checked with TLC: deadlock
-
-
+- <a href="https://github.com/ongardie/raft.tla">TLA<sup>+</sup> files</a>

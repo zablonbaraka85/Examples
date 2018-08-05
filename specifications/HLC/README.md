@@ -4,5 +4,4 @@
 - Extended modules: Int
 - Computation models: no faults
 - Some properties checked with TLC: termination, Boundedl, Boundedc, Sync
-
-
+- <a href="https://github.com/muratdem/HLC">TLA<sup>+</sup> files</a>

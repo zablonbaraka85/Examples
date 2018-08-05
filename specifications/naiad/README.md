@@ -4,5 +4,5 @@
 - Extended modules: Int, Seq, FinSet
 - Computation models: no faults
 - Some properties checked with TLC: correctness
-
+- Only PDF files
 

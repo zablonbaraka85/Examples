@@ -4,5 +4,6 @@
 - Extended modules: Int, Seq, FinSet
 - Computation models: clean crashes
 - Some properties checked with TLC: correctness
+- <a href="https://losa.fr/M2Paxos/">TLA<sup>+</sup> files</a>
 
 

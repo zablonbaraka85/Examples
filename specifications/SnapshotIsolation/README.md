@@ -4,5 +4,4 @@
 - Extended modules: FinSet, Int, Seq
 - Computation models: Write-rejection
 - Some properties checked with TLC: termination, correctness
-
-
+- <a href="https://github.com/sanjosh/tlaplus/blob/master/amazon/serializableSnapshotIsolation.tla">TLA<sup>+</sup> files</a>

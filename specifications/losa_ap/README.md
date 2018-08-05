@@ -4,5 +4,6 @@
 - Extended modules: FinSet, Nat, Seq
 - Computation models: crashes
 - Some properties checked with TLC: fairness, consistency, correctness, termination
+- <a href="https://losa.fr/research/assignment/">TLA<sup>+</sup> files</a>
 
 

@@ -4,5 +4,6 @@
 - Extended modules: Int, FinSet
 - Computation models: crashes, lost messages
 - Some properties checked with TLC: correctness
+- <a href="https://github.com/tschottdorf/caspaxos-tla">TLA<sup>+</sup> files</a>
 
 

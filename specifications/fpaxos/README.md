@@ -4,5 +4,6 @@
 - Extended modules: Int
 - Computation models: crashes, lost/duplicated messages
 - Some properties checked with TLC: agreed, SafeValue
+- <a href="https://github.com/fpaxos/fpaxos-tlaplus">TLA<sup>+</sup> files</a>
 
 

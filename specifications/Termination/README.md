@@ -4,5 +4,6 @@
 - Extended modules: FinSet, Bags, Nat
 - Computation models: no faults
 - Some properties checked with TLC: termination
+- <a href="https://github.com/nano-o/Distributed-termination-detection">TLA<sup>+</sup> files</a>
 
 

@@ -4,5 +4,5 @@
 - Extended modules: Int, Seq
 - Computation models: no faults
 - Some properties checked with TLC: deadlock
-
+- Only PDF files
 

@@ -4,5 +4,6 @@
 - Extended modules: Nat, FinSet
 - Computation models: crashes, lost/duplicated messages
 - Some properties checked with TLC: nontriviality, consistency
+- <a href="https://www.microsoft.com/en-us/research/publication/fast-paxos/">TLA<sup>+</sup> files</a>
 
 
