@@ -1,4 +1,4 @@
--------------------------- MODULE QueensPlusCal -----------------------------
+-------------------------- MODULE QueensPluscal -----------------------------
 EXTENDS Naturals, Sequences
 (***************************************************************************)
 (* Formulation of the N-queens problem and an iterative algorithm to solve *)

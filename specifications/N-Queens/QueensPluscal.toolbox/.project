@@ -23,7 +23,7 @@
 		<link>
 			<name>QueensPluscal.tla</name>
 			<type>1</type>
-			<location>/Users/merz/projects/tla/QueensPluscal.tla</location>
+			<location>PARENT-1-PROJECT_LOC/QueensPluscal.tla</location>
 		</link>
 	</linkedResources>
 </projectDescription>
