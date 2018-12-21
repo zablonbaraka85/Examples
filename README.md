@@ -72,6 +72,7 @@ Do you have your own case study that you like to share with the community? Send 
 | 58 | TransitiveClosure | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/TransitiveClosure">The transitive closure of a relation</a> |  |  | &#10004; | FinSet, Int, Seq | 
 | 59 | TwoPhase | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/TwoPhase">Two-phase handshaking</a> | Stephan Merz |  | &#10004; | Nat | 
 | 60 | VoldemortKV | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/VoldemortKV">Voldemort distributed key value store</a> | Murat Demirbas |  | &#10004; | FinSet, Int, Seq | 
+| 61 | Missionaries and Cannibals | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/MissionariesAndCannibals">Missionaries and Cannibals</a> | Leslie Lamport |  | &#10004; | FinSet, Int | 
 
 
 ## License

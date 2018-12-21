@@ -33,6 +33,12 @@ lamport_mutex
    Distributed System", together with a hierarchical proof of
    mutual exclusion.
 
+MissionariesAndCannibals
+   This is a very simple TLA+ spec that can be read by someone knowing
+   nothing about TLA+.  The spec, including all the TLA+ constructs it
+   uses, are explained in comments.  The pdf file contains a
+   pretty-printed version of the actual spec.
+
 N-Queens
    TLA+ and PlusCal descriptions of a solution to the N queens
    problem.  Written by Stephan Merz.
