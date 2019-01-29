@@ -122,7 +122,7 @@ SpecNoBcast == InitNoBcast /\ [][Next]_vars
    AC - a process accepted and sent the message to everybody  
    CR - a process is crashed 
  *)
-sTypeOK == 
+TypeOK == 
   /\ sent \in SUBSET (Proc \times M)
   /\ pc \in [ Proc -> {"V0", "V1", "AC", "CR"} ]   
   /\ rcvd \in [ Proc -> SUBSET (Proc \times M) ]
@@ -149,4 +149,4 @@ ReliableChan ==
 
 =============================================================================
 \* Modification History
-\* Last modified Fri Jul 06 15:04:26 CEST 2018 by tthai
+\* Last modified Mon Sep 03 17:01:26 CEST 2018 by tthai
