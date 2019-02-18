@@ -4,5 +4,5 @@
 - Extended modules: Int, Seq, FinSet
 - Computation models: no faults
 - Some properties checked with TLC: correctness
-- Only PDF files
+- Only <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2013/02/paper.pdf"> PDF files</a>
 
