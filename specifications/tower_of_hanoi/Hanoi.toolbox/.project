@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Hanoi_1</name>
+	<name>Hanoi</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -23,7 +23,7 @@
 		<link>
 			<name>Bits.tla</name>
 			<type>1</type>
-			<location>/home/markus/src/TLA/Examples/specifications/tower_of_hanoi/Bits.tla</location>
+			<location>PARENT-1-PROJECT_LOC/Bits.tla</location>
 		</link>
 		<link>
 			<name>Hanoi.tla</name>

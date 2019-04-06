@@ -41,6 +41,6 @@
 <intAttribute key="simuAril" value="-1"/>
 <intAttribute key="simuDepth" value="100"/>
 <intAttribute key="simuSeed" value="-1"/>
-<stringAttribute key="specName" value="Hanoi_1"/>
+<stringAttribute key="specName" value="Hanoi"/>
 <stringAttribute key="view" value=""/>
 </launchConfiguration>
