@@ -9,12 +9,11 @@
 (* describes such an implementation.  You may want to read it after        *)
 (* reading this module.                                                    *)
 (*                                                                         *)
-(* The proof of Misra's variant is also subtler than that of the obvious   *)
-(* algorithm.  Module ReachableProofs contains a TLA+ proof of the         *)
-(* algorithm's safety property--that is, partial correctness, which means  *)
-(* that if the algorithm terminates then it produces the correct answer.   *)
-(* That proof has been checked by TLAPS, the TLA+ proof system.  The       *)
-(* proof is based on ideas from an informal correctness proof by Misra.    *)
+(* Module ReachableProofs contains a TLA+ proof of the algorithm's safety  *)
+(* property--that is, partial correctness, which means that if the         *)
+(* algorithm terminates then it produces the correct answer.  That proof   *)
+(* has been checked by TLAPS, the TLA+ proof system.  The proof is based   *)
+(* on ideas from an informal correctness proof by Misra.                   *)
 (*                                                                         *)
 (* In this module, reachability is expressed in terms of the operator      *)
 (* ReachableFrom, where ReachableFrom(S) is the set of nodes reachable     *)
@@ -83,6 +82,7 @@ Here is the TLA+ translation of the PlusCal code.
 \* BEGIN TRANSLATION  
 VARIABLES marked, vroot, pc
 
+\*Reachable == ReachableFrom(marked)  (* added for a test *)
 vars == << marked, vroot, pc >>
 
 Init == (* Global variables *)
@@ -235,7 +235,7 @@ THEOREM  ASSUME IsFiniteSet(Reachable)
  (**************************************************************************)
 =============================================================================
 \* Modification History
-\* Last modified Sun Apr 14 16:21:57 PDT 2019 by lamport
+\* Last modified Wed Apr 17 12:21:22 PDT 2019 by lamport
 \* Created Thu Apr 04 10:11:51 PDT 2019 by lamport
 
     
