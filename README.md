@@ -75,6 +75,7 @@ Do you have your own case study that you like to share with the community? Send 
 | 61 | Missionaries and Cannibals | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/MissionariesAndCannibals">Missionaries and Cannibals</a> | Leslie Lamport |  | &#10004; | FinSet, Int | 
 | 62 | Misra Reachability Algorithm | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/MisraReachability">Misra Reachability Algorithm</a> | Leslie Lamport | &#10004;  | &#10004; | Int, Seq, FiniteSets, TLC, TLAPS, NaturalsInduction | 
 | 63 | Loop Invariance | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/LoopInvariance">Loop Invariance</a> | Leslie Lamport | &#10004;  | &#10004; | Int, Seq, FiniteSets, TLC, TLAPS, SequenceTheorems, NaturalsInduction | 
+| 64 | Teaching Concurrency | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/TeachingConcurrency">Teaching Concurrency</a> | Leslie Lamport | &#10004;  | &#10004; | Int, TLAPS | 
 
 
 ## License
