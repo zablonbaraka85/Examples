@@ -145,7 +145,7 @@ Phase2a(b, v) ==
 (* phase 2a message.  Acceptor a can perform this action only if the       *)
 (* message is for a ballot number greater than or equal to maxBal[a].  In  *)
 (* that case, the acceptor votes as directed by the phase 2a message,      *)
-(* setting maxBVal[a] and maxVal[a] to record that vote and sending a      *)
+(* setting maxVBal[a] and maxVal[a] to record that vote and sending a      *)
 (* phase 2b message announcing its vote.  It also sets maxBal[a] to the    *)
 (* message's.  ballot number                                               *)
 (***************************************************************************)
