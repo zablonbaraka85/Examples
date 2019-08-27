@@ -88,9 +88,9 @@ simpler.
 }
 
 
-Here is the TLA+ translation of the PlusCal code.
- ***************************************************************************)
-\* BEGIN TRANSLATION
+
+***************************************************************************)
+\* BEGIN TRANSLATION   Here is the TLA+ translation of the PlusCal code.
 VARIABLES marked, vroot, pc, u, toVroot
 
 vars == << marked, vroot, pc, u, toVroot >>
@@ -231,5 +231,7 @@ THEOREM Spec => R!Init /\ [][R!Next]_R!vars
 THEOREM Spec => WF_R!vars(R!Next)
 =============================================================================
 \* Modification History
+\* Last modified Tue Aug 27 14:58:47 PDT 2019 by loki
+\* Last modified Fri Jun 28 16:26:24 PDT 2019 by loki
 \* Last modified Sun Apr 14 16:53:23 PDT 2019 by lamport
 \* Created Mon Apr 08 10:48:52 PDT 2019 by lamport

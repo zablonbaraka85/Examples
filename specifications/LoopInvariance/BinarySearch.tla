@@ -35,7 +35,7 @@ SortedSeqs == {ss \in Seq(Values) :
             if (mval = val) { result := mid}
             else if (val < mval) { high := mid - 1}
             else {low := mid + 1}                    } } } }
- ***************************************************************************)
+***************************************************************************)
 \* BEGIN TRANSLATION
 VARIABLES seq, val, low, high, result, pc
 
@@ -250,5 +250,6 @@ THEOREM Spec => []resultCorrect
   BY <1>1, <1>2, <1>3, PTL DEF Spec
 =============================================================================
 \* Modification History
+\* Last modified Tue Aug 27 12:59:52 PDT 2019 by loki
 \* Last modified Fri May 03 16:28:58 PDT 2019 by lamport
 \* Created Wed Apr 17 15:15:12 PDT 2019 by lamport

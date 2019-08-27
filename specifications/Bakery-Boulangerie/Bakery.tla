@@ -99,7 +99,8 @@ a \prec b == \/ a[1] < b[1]
     }
 }
 
-***     this ends the comment containg the pluscal code      **********)
+    this ends the comment containing the PlusCal code
+*************)
 
 \* BEGIN TRANSLATION  (this begins the translation of the PlusCal code)
 VARIABLES num, flag, pc, unchecked, max, nxt
@@ -199,8 +200,7 @@ Next == (\E self \in Procs: p(self))
 
 Spec == /\ Init /\ [][Next]_vars
         /\ \A self \in Procs : WF_vars((pc[self] # "ncs") /\ p(self))
-        /\ \A self \in Procs : WF_vars(/\ e1(self) \/  e3(self) \/ e4(self) \/ exit(self)
-                                       /\ (pc'[self] # pc[self]))
+
 \* END TRANSLATION   (this ends the translation of the PlusCal code)
 
 (***************************************************************************)
@@ -459,6 +459,7 @@ ISpec == IInit /\ [][Next]_vars
              
 =============================================================================
 \* Modification History
+\* Last modified Tue Aug 27 12:23:10 PDT 2019 by loki
 \* Last modified Fri May 25 11:18:47 CEST 2018 by merz
 \* Last modified Sat May 19 16:40:23 CEST 2018 by merz
 \* Last modified Thu May 17 07:02:45 PDT 2018 by lamport
@@ -473,4 +474,3 @@ IInit == /\ num \in [Procs -> Nat]
          /\ pc \in [Procs -> {"ncs", "e1", "e2", "e3",
                                "e4", "w1", "w2", "cs"}] 
          /\ II  
-

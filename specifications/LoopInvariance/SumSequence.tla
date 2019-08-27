@@ -53,7 +53,7 @@ with the variable sum equal to the sum of the elements of seq.
              n := n+1 ;           }
     }
 }
- ***************************************************************************)
+***************************************************************************)
 \* BEGIN TRANSLATION
 VARIABLES seq, sum, n, pc
 
@@ -543,5 +543,6 @@ LEMMA Lemma5_Proof ==
   BY <1>3
 =============================================================================
 \* Modification History
+\* Last modified Tue Aug 27 12:59:10 PDT 2019 by loki
 \* Last modified Fri May 03 16:40:42 PDT 2019 by lamport
 \* Created Fri Apr 19 14:13:06 PDT 2019 by lamport

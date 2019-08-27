@@ -76,10 +76,9 @@ node and does the following:
 }
 
 
-Here is the TLA+ translation of the PlusCal code.
 ***************************************************************************)
 
-\* BEGIN TRANSLATION  
+\* BEGIN TRANSLATION    Here is the TLA+ translation of the PlusCal code.
 VARIABLES marked, vroot, pc
 
 \*Reachable == ReachableFrom(marked)  (* added for a test *)
@@ -235,6 +234,7 @@ THEOREM  ASSUME IsFiniteSet(Reachable)
  (**************************************************************************)
 =============================================================================
 \* Modification History
+\* Last modified Tue Aug 27 14:46:36 PDT 2019 by loki
 \* Last modified Wed Apr 17 12:21:22 PDT 2019 by lamport
 \* Created Thu Apr 04 10:11:51 PDT 2019 by lamport
 

@@ -164,7 +164,8 @@ a \prec b == \/ a[1] < b[1]
     }
 }
 
-***     this ends the comment containg the pluscal code      **********)
+    this ends the comment containing the PlusCal code
+*************)
 
 \* BEGIN TRANSLATION  (this begins the translation of the PlusCal code)
 VARIABLES num, flag, pc, unchecked, max, nxt, previous
@@ -530,6 +531,7 @@ DeadlockFree == (\E i \in Procs : Trying(i)) ~> (\E i \in Procs : InCS(i))
 StarvationFree == \A i \in Procs : Trying(i) ~> InCS(i)
 =============================================================================
 \* Modification History
+\* Last modified Tue Aug 27 12:22:38 PDT 2019 by loki
 \* Last modified Thu May 24 20:03:58 CEST 2018 by merz
 \* Last modified Thu May 24 13:49:22 CEST 2018 by merz
 \* Last modified Tue Jul 21 17:55:23 PDT 2015 by lamport
