@@ -76,7 +76,8 @@ Do you have your own case study that you like to share with the community? Send 
 | 62 | Misra Reachability Algorithm | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/MisraReachability">Misra Reachability Algorithm</a> | Leslie Lamport | &#10004;  | &#10004; | Int, Seq, FiniteSets, TLC, TLAPS, NaturalsInduction | 
 | 63 | Loop Invariance | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/LoopInvariance">Loop Invariance</a> | Leslie Lamport | &#10004;  | &#10004; | Int, Seq, FiniteSets, TLC, TLAPS, SequenceTheorems, NaturalsInduction | 
 | 64 | Teaching Concurrency | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/TeachingConcurrency">Teaching Concurrency</a> | Leslie Lamport | &#10004;  | &#10004; | Int, TLAPS | 
-| 64 | Spanning Tree | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/SpanningTree">Spanning Tree</a> | Leslie Lamport |  | &#10004; | Int, FiniteSets, TLC, Randomization | 
+| 65 | Spanning Tree | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/SpanningTree">Spanning Tree</a> | Leslie Lamport |  | &#10004; | Int, FiniteSets, TLC, Randomization | 
+| 66 | Paxos (How to win a Turing Award) | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/PaxosHowToWinATuringAward">Paxos</a> | Leslie Lamport |  | &#10004; | Nat, Int, FiniteSets | 
 
 
 ## License
