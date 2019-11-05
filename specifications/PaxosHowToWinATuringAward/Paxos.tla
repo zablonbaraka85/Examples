@@ -45,7 +45,7 @@ None == CHOOSE v : v \notin Ballot
   (*************************************************************************)
 
 (***************************************************************************)
-(* We now define Message toe be the set of all possible messages that can  *)
+(* We now define Message to be the set of all possible messages that can   *)
 (* be sent in the algorithm.  In TLA+, the expression                      *)
 (*                                                                         *)
 (* (1) [type |-> "1a", bal |-> b]                                          *)
