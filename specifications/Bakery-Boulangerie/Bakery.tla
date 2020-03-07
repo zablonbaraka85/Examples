@@ -204,7 +204,7 @@ Spec == /\ Init /\ [][Next]_vars
 \* END TRANSLATION   (this ends the translation of the PlusCal code)
 
 (***************************************************************************)
-(* MutualExclusion asserts that two distinct processes are in their        *)
+(* MutualExclusion asserts that no two distinct processes are in their     *)
 (* critical sections.                                                      *)
 (***************************************************************************)
 MutualExclusion == \A i,j \in Procs : (i # j) => ~ /\ pc[i] = "cs"
@@ -269,8 +269,7 @@ Inv == /\ TypeOK
 (* This is a standard invariance proof, where <1>2 asserts that any step   *)
 (* of the algorithm (including a stuttering step) starting in a state in   *)
 (* which Inv is true leaves Inv true.  Step <1>4 follows easily from       *)
-(* <1>1-<1>3 by simple temporal reasoning, but TLAPS does not yet do any   *)
-(* temporal reasoning.                                                     *)
+(* <1>1-<1>3 by simple temporal reasoning.                                 *)
 (***************************************************************************)
 THEOREM Spec => []MutualExclusion
 <1> USE N \in Nat DEFS Procs, TypeOK, Before, \prec, ProcSet 
@@ -321,8 +320,6 @@ THEOREM Spec => []MutualExclusion
                  pc' = [pc EXCEPT ![self] = "e2"]
           PROVE  Inv'
        <4>. TypeOK'  BY <3>2 DEF Inv
-\*       <4>0. \A ii \in Procs : (pc'[ii] \in {"ncs", "e1", "e2"}) => (num'[ii] = 0)
-\*         BY <3>2 DEF Inv
        <4>1. \A ii \in Procs : (pc'[ii] \in {"e4", "w1", "w2", "cs"}) => (num'[ii] # 0)
          BY <3>2 DEF Inv
        <4>2. \A ii \in Procs : (pc'[ii] \in {"e2", "e3"}) => flag'[ii]
@@ -376,7 +373,7 @@ THEOREM Spec => []MutualExclusion
     <3>2. CASE /\ flag' = [flag EXCEPT ![self] = FALSE]
                /\ unchecked' = [unchecked EXCEPT ![self] = Procs \ {self}]
                /\ pc' = [pc EXCEPT ![self] = "w1"]
-      BY <3>2 DEF Inv
+      BY <3>2, Z3T(30) DEF Inv
     <3>. QED  BY <3>1, <3>2, <2>5 DEF e4
   <2>6. ASSUME NEW self \in Procs,
                w1(self)
@@ -459,8 +456,8 @@ ISpec == IInit /\ [][Next]_vars
              
 =============================================================================
 \* Modification History
+\* Last modified Sat Mar 07 08:41:02 CET 2020 by merz
 \* Last modified Tue Aug 27 12:23:10 PDT 2019 by loki
-\* Last modified Fri May 25 11:18:47 CEST 2018 by merz
 \* Last modified Sat May 19 16:40:23 CEST 2018 by merz
 \* Last modified Thu May 17 07:02:45 PDT 2018 by lamport
 \* Created Thu Nov 21 15:54:32 PST 2013 by lamport
