@@ -40,6 +40,7 @@ Do you have your own case study that you like to share with the community? Send 
 | 26 | diskpaxos | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/diskpaxos">Disk Paxos (Gafni & Lamport, 2003)</a> | Leslie Lamport, Giuliano Losa |  | &#10004; | Int | 
 | 27 | egalitarian-paxos | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/egalitarian-paxos">Leaderless replication protocol based on Paxos (Moraru et al., 2013)</a> | Iulian Moraru |  | &#10004; | Nat, FinSet | 
 | 28 | ewd840 | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/ewd840">Termination detection in a ring (Dijkstra et al., 1986)</a> | Stephan Merz | &#10004; | &#10004; | Nat | 
+| 70 | ewd998 | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/ewd998">Shmuel safra's version of termination detection</a> | Stephan Merz, Markus Kuppe |  | &#10004; | Int, FinSet | 
 | 29 | fastpaxos | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/fastpaxos">An extension of the classic Paxos algorithm, only PDF files (Lamport, 2006)</a> | Leslie Lamport |  |  | Nat, FinSet | 
 | 30 | fpaxos | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/fpaxos">A variant of Paxos with flexible quorums (Howard et al., 2017)</a> | Heidi Howard |  | &#10004; | Int | 
 | 31 | HLC | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/HLC">Hybrid logical clocks and hybrid vector clocks (Demirbas et al., 2014)</a> | Murat Demirbas |  | &#10004; | Int | 
