@@ -93,7 +93,7 @@ SendMsg(i) ==
   /\ \E j \in Nodes \ {i} : pending' = [pending EXCEPT ![j] = @ + 1]
           \* Note that we don't blacken node i as in EWD840 if node i
           \* sends a message to node j with j > i
-   /\ UNCHANGED <<active, color, token>>
+  /\ UNCHANGED <<active, color, token>>
 
 RecvMsg(i) ==
   /\ pending[i] > 0

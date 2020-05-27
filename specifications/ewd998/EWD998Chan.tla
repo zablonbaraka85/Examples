@@ -132,7 +132,7 @@ SendMsg(i) ==
           /\ inbox' = [inbox EXCEPT ![j] = Append(@, [type |-> "pl" ] ) ]
           \* Note that we don't blacken node i as in EWD840 if node i
           \* sends a message to node j with j > i
-   /\ UNCHANGED <<active, color>>                            
+  /\ UNCHANGED <<active, color>>                            
 
 RecvMsg(i) ==
   (* Rule 0 *)
