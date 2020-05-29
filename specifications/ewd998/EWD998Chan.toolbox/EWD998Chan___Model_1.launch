@@ -25,12 +25,12 @@
     <stringAttribute key="modelComments" value=""/>
     <booleanAttribute key="modelCorrectnessCheckDeadlock" value="false"/>
     <listAttribute key="modelCorrectnessInvariants">
-        <listEntry value="1Inv"/>
-        <listEntry value="1TypeOK"/>
+        <listEntry value="1EWD998!Inv"/>
+        <listEntry value="1EWD998!TypeOK"/>
     </listAttribute>
     <listAttribute key="modelCorrectnessProperties">
         <listEntry value="1EWD998Spec"/>
-        <listEntry value="1Liveness"/>
+        <listEntry value="1EWD998!Liveness"/>
     </listAttribute>
     <intAttribute key="modelEditorOpenTabs" value="14"/>
     <stringAttribute key="modelExpressionEval" value=""/>
