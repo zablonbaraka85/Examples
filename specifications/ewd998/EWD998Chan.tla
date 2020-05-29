@@ -5,35 +5,7 @@
 (* Shmuel Safra's version of termination detection.                        *)
 (* Contrary to EWD998, this variant models message channels as sequences.  *)
 (***************************************************************************)
-EXTENDS Integers, Sequences, FiniteSets
-
-------------------------------------------------------------------------------
-
-Contains(s, e) ==
-  (**************************************************************************)
-  (* TRUE iff the element e \in ToSet(s).                                   *)
-  (**************************************************************************)
-  \E i \in 1..Len(s) : s[i] = e
-  
-RemoveAt(s, i) == 
-  (**************************************************************************)
-  (* Replaces the element at position i shortening the length of s by one.  *)
-  (**************************************************************************)
-  SubSeq(s, 1, i-1) \o SubSeq(s, i+1, Len(s))
-  
-Reduce(op(_,_), fun, from, to, base) == 
-  (**************************************************************************)
-  (* Reduce the elements in the range from..to of the function's co-domain. *)
-  (**************************************************************************)
-  LET reduced[i \in from..to] ==
-          IF i = from THEN op(base, fun[i])
-          ELSE op(reduced[i - 1], fun[i])
-  IN reduced[to]
-
-sum(a, b) ==
-  a + b
-
-------------------------------------------------------------------------------
+EXTENDS Integers, Sequences, FiniteSets, Utils
 
 CONSTANT N
 ASSUME NAssumption == N \in Nat \ {0} \* At least one node.

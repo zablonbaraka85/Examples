@@ -20,5 +20,10 @@
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/EWD998.tla</locationURI>
 		</link>
+		<link>
+			<name>Utils.tla</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Utils.tla</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

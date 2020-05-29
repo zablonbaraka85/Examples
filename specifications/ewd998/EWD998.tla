@@ -5,23 +5,7 @@
 (* Shmuel Safra's version of termination detection.                        *)
 (* https://www.cs.utexas.edu/users/EWD/ewd09xx/EWD998.PDF                  *)
 (***************************************************************************)
-EXTENDS Integers, FiniteSets
-
-------------------------------------------------------------------------------
-
-Reduce(op(_,_), fun, from, to, base) == 
-  (**************************************************************************)
-  (* Reduce the elements in the range from..to of the function's co-domain. *)
-  (**************************************************************************)
-  LET reduced[i \in from..to] ==
-          IF i = from THEN op(base, fun[i])
-          ELSE op(reduced[i - 1], fun[i])
-  IN reduced[to]
-
-sum(a, b) ==
-  a + b
-
-------------------------------------------------------------------------------
+EXTENDS Integers, FiniteSets, Utils
 
 CONSTANT N
 ASSUME NAssumption == N \in Nat \ {0} \* At least one node.

@@ -18,12 +18,17 @@
 		<link>
 			<name>EWD998.tla</name>
 			<type>1</type>
-			<location>/home/markus/src/TLA/_specs/examples/specifications/ewd998/EWD998.tla</location>
+			<locationURI>PARENT-1-PROJECT_LOC/EWD998.tla</locationURI>
 		</link>
 		<link>
 			<name>EWD998Chan.tla</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/EWD998Chan.tla</locationURI>
+		</link>
+		<link>
+			<name>Utils.tla</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Utils.tla</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
