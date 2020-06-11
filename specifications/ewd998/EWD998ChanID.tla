@@ -11,6 +11,9 @@
 (* Minor differences:                                                      *)
 (*  - In the interest of conciseness, the spec drops a few definitions     *)
 (*    that are found in the high-level spec EWD998Chan.                    *)
+(*                                                                         *)
+(*  - Pull \E n \in Nodes up to the Spec level in preparation of PlusPy    *)
+(*    implementation.                                                      *)
 (***************************************************************************)
 EXTENDS Integers, Sequences, FiniteSets, Naturals, Utils
 
@@ -89,8 +92,10 @@ PassToken(n) ==
   \* The state of the nodes remains unchanged by token-related actions.
   /\ UNCHANGED <<active, counter>>                            
 
-System == \/ InitiateProbe
-          \/ \E n \in Nodes \ {Initiator} : PassToken(n)
+System(n) == \/ /\ n = Initiator
+                /\ InitiateProbe
+             \/ /\ n # Initiator
+                /\ PassToken(n)
 
 -----------------------------------------------------------------------------
 
@@ -126,14 +131,19 @@ Deactivate(n) ==
   /\ active' = [active EXCEPT ![n] = FALSE]
   /\ UNCHANGED <<color, inbox, counter>>
 
-Environment == \E n \in Nodes : SendMsg(n) \/ RecvMsg(n) \/ Deactivate(n)
+Environment(n) == 
+  \/ SendMsg(n)
+  \/ RecvMsg(n)
+  \/ Deactivate(n)
 
 -----------------------------------------------------------------------------
 
-Next ==
-  System \/ Environment
+Next(n) ==
+  System(n) \/ Environment(n)
 
-Spec == Init /\ [][Next]_vars /\ WF_vars(System)
+\* Idiomatic/canonical TLA+ has existential quantification down in System and Next.
+Spec == Init /\ [][\E n \in Nodes: Next(n)]_vars
+             /\ \A n \in Nodes: WF_vars(System(n))
 
 -----------------------------------------------------------------------------
 \* The definitions of the refinement mapping below this line will be
