@@ -82,6 +82,7 @@ Do you have your own case study that you like to share with the community? Send 
 | 67 | Tencent-Paxos | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/TencentPaxos">PaxosStore: high-availability storage made practical in WeChat. Proceedings of the VLDB Endowment(Zheng et al., 2017)</a> | Xingchen Yi, Hengfeng Wei | | &#10004; | Int, FiniteSets |
 | 68 | Blocking Queue | <a href="https://github.com/lemmy/BlockingQueue/">BlockingQueue</a> | Markus Kuppe | | &#10004; [(LiveEnv)](https://gitpod.io/#https://github.com/lemmy/BlockingQueue/blob/master/BlockingQueue.tla) | Naturals, Sequences, FiniteSets |
 | 69 | Paxos | <a href="https://github.com/neoschizomer/Paxos">Paxos</a> | | | &#10004; | Int, FiniteSets |
+| 71 | Echo Algorithm | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/echo">Echo Algorithm</a> | Stephan Merz |   | &#10004; | Naturals, FiniteSets, Relation, TLC | 
 
 ## License
 
