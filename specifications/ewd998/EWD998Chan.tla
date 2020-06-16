@@ -170,9 +170,14 @@ EWD998 == INSTANCE EWD998 WITH token <-
                                        q     |-> inbox[tpos][tkn].q,
                                        color |-> inbox[tpos][tkn].color],
                                pending <-
-                                  [n \in Nodes |-> IF n = tpos 
-                                                   THEN Len(inbox[n])-1 
-                                                   ELSE Len(inbox[n])]
+                                  \* Count the in-flight "pl" messages. The 
+                                  \* inbox variable represents a node's network
+                                  \* interface that receives arbitrary messages.
+                                  \* However, EWD998 only "tracks" payload (pl)
+                                  \* messages.
+                                  [n \in Nodes |-> 
+                                     Len(SelectSeq(inbox[n], 
+                                         LAMBDA msg: msg.type = "pl")) ]
 
 \* TLC config doesn't accept the expression EWD998!Spec for PROPERTY.
 \* Model-checked for N=3 and StateConstraint above on a laptop in ~15min.
