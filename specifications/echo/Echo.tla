@@ -11,8 +11,13 @@ CONSTANTS Node,      \* set of nodes
 
 ASSUME /\ initiator \in Node
        /\ R \in [Node \X Node -> BOOLEAN]
+       \* No edge from a node to itself (self-loops).
        /\ IsIrreflexive(R, Node)
+       \* Undirected graph (there exists an edge from b 
+       \* to a if there exists an edge from a to b).
        /\ IsSymmetric(R, Node)
+       \* There exists a spanning tree consisting of *all* nodes.
+       \* (no forest of spanning trees). 
        /\ IsConnected(R, Node)
 
 NoNode == CHOOSE x : x \notin Node
@@ -190,6 +195,6 @@ AncestorProperties ==
 
 =============================================================================
 \* Modification History
-\* Last modified Sun Jun 14 21:43:34 PDT 2020 by markus
+\* Last modified Wed Jun 17 09:23:17 PDT 2020 by markus
 \* Last modified Sun Jun 14 17:11:39 CEST 2020 by merz
 \* Created Tue Apr 26 09:42:23 CEST 2016 by merz
