@@ -8,7 +8,7 @@ The page **TLA<sup>+</sup> Examples** is a library of TLA<sup>+</sup> specificat
 
 Do you have your own case study that you like to share with the community? Send a pointer to us and we will include it in the repository. Your specifications will help the community in improving the tools for TLA<sup>+</sup> analysis.
 
-## List of benchmarks
+## List of Examples
 
 | No 	 | Name  | Short description 																				| Spec's authors	| TLAPS Proof | TLC Check | Used modules |
 | :--: | ----  | -------------------------------------------------------- | --------------- | :---------: | :-------: | ------------ |
