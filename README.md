@@ -93,4 +93,4 @@ The repository is under the MIT license. However, we can upload your benchmarks 
 
 ## Support or Contact
 
-Do you have any questions? Please contact <a href="mailto: tran@forsyte.ac.at">Thanh-Hai Tran</a>.
+Do you have any questions or comments? Please open an issue or send an email to the [TLA+ group](https://groups.google.com/g/tlaplus).
