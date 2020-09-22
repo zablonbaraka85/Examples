@@ -15,7 +15,7 @@ ASSUME QuorumAssumption == /\ \A Q \in Quorum : Q \subseteq Acceptor
       
 Ballot ==  Nat
 
-None == CHOOSE v : v \notin Ballot
+None == CHOOSE v : v \notin Value
   (*************************************************************************)
   (* An unspecified value that is not a ballot number.                     *)
   (*************************************************************************)
