@@ -13,20 +13,6 @@ LEMMA TypeCorrect == Spec => []TypeOK
 <1>1. Init => TypeOK
   BY DEF Init, TypeOK, Color
 <1>2. TypeOK /\ [Next]_vars => TypeOK'
-  BY NAssumption DEF TypeOK, Color, Nodes, vars, Next, System, Environment,
-                     InitiateProbe, PassToken, SendMsg, Deactivate
-<1>. QED  BY <1>1, <1>2, PTL DEF Spec
-
-
-(***************************************************************************)
-(* Follows a more detailed proof of the same lemma. It illustrates how     *)
-(* proofs can be decomposed hierarchically. Use the "Decompose Proof"      *)
-(* command (C-G C-D) to prepare the skeleton of the level-2 steps.         *)
-(***************************************************************************)
-LEMMA Spec => []TypeOK
-<1>1. Init => TypeOK
-  BY DEF Init, TypeOK, Color
-<1>2. TypeOK /\ [Next]_vars => TypeOK'
   <2> SUFFICES ASSUME TypeOK,
                       [Next]_vars
                PROVE  TypeOK'
@@ -94,5 +80,5 @@ LEMMA Inv => TerminationDetection
 
 =============================================================================
 \* Modification History
-\* Last modified Tue Jun 28 18:24:01 CEST 2016 by merz
+\* Last modified Wed Dec 09 10:55:25 CET 2020 by merz
 \* Created Mon Sep 09 11:33:10 CEST 2013 by merz
