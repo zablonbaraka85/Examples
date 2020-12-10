@@ -166,7 +166,10 @@ convert -delay 100 -density 200 *.svg EWD840.gif
 ## Technical notes:
 ## convert ticks 100 times per second, thus, shows one svg per second.
 ## -density 200 determines the quality and produces approximately a gif
-## with 600x600 dimensions.
+## with 600x600 dimensions. One has to increase the limits for ImageMagic
+## in /etc/ImageMagic-6/policy.xml according to
+## https://github.com/ImageMagick/ImageMagick/issues/396#issuecomment-501164036
+## to keep it from choking.
 
 ## Render to mp4:
 ## The svgs have transparent background.  Convert them into pngs with a
