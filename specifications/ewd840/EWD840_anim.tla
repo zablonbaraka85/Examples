@@ -128,7 +128,7 @@ AnimInv == terminationDetected => TLCGet("level") < 20
 ## installed to /opt/toolbox.  On macOS, install gawk with `brew install gawk` 
 ## (default nawk does not like the match).
 
-/opt/toolbox/tla2tools.jar -simulate EWD840_anim | gawk 'match($0,/<svg.*<\/svg>/) { n += 1; print substr($0,RSTART,RLENGTH) > n ".svg" }' && eog .
+/opt/toolbox/tla2tools.jar -simulate EWD840_anim | gawk 'match($0,/<svg.*<\/svg>/) { n += 1; print substr($0,RSTART,RLENGTH) > sprintf("%03d", n) ".svg" }' && eog .
 
 
 ## The best viewer for a stack of SVGs is Gnome's Eye Of Gnome (eog) that
