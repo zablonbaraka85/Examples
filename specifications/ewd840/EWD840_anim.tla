@@ -102,15 +102,14 @@ TokenNetwork ==
 ArrowPosOffset == NodeDimension \div 2
 
 Messages ==
-    LET visible == IF history[3] = "SendMsg" THEN "visible" ELSE "hidden"
-        from == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, history[1], N)
+    LET from == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, history[1], N)
         to   == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, history[2], N)
         circ == Circle(to.x + ArrowPosOffset, to.y + ArrowPosOffset, 3, 
-                        [stroke |-> "orange", fill |-> "orange", visibility |-> visible])  
+                        [stroke |-> "orange", fill |-> "orange"])  
         line == Line(from.x + ArrowPosOffset, from.y + ArrowPosOffset, 
                         to.x + ArrowPosOffset, to.y + ArrowPosOffset, 
-                        [stroke |-> "orange", visibility |-> visible])
-    IN Group(<<line, circ>>, ("transform" :> "translate(0 125)"))
+                        [stroke |-> "orange"])
+    IN Group(IF history[3] = "SendMsg" THEN <<line, circ>> ELSE <<>>, ("transform" :> "translate(0 125)"))
 
 ---------------------------------------------------------------------------
 Animation == SVGElemToString(Group(<<Labels, RingNetwork, TokenNetwork, Messages>>, <<>>))
