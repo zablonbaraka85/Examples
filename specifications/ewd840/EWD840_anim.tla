@@ -48,7 +48,7 @@ AnimSpec == AnimInit /\ [][AnimNext]_Animvars /\ WF_Animvars(AnimSystem)
 ---------------------------------------------------------------------------
 Arial == [font |-> "Arial"]
 
-LegendBasePos == [ x |-> 5, y |-> 25 ]
+LegendBasePos == [ x |-> -5, y |-> 25 ]
 
 RingBasePos == [w |-> 55, h |-> 55, r |-> 75]
 
@@ -60,13 +60,10 @@ TokenBasePos == [ w |-> RingBasePos.w + 12,
 ---------------------------------------------------------------------------
 \* Labels
 
-GLegend == Text(LegendBasePos.x - 75, LegendBasePos.y, "Circle: Active, Line: Message, Dot: Receiver, Black: Tainted", Arial)
-
-GLevel == Group(<<Text(LegendBasePos.x, LegendBasePos.y + 15, "Level:", Arial), 
-                  Text(LegendBasePos.x + 55, LegendBasePos.y + 15, ToString(TLCGet("level")), Arial)>>,
+Labels == Group(<<Text(LegendBasePos.x, LegendBasePos.y, "Circle: Active, Black: Tainted", Arial),
+                  Text(LegendBasePos.x, LegendBasePos.y + 20, "Line: Message, Dot: Receiver", Arial),
+                  Text(LegendBasePos.x, LegendBasePos.y + 40, "Level: " \o ToString(TLCGet("level")), Arial)>>,
                   <<>>)
-
-Labels == Group(<<GLevel, GLegend>>, <<>>)
 
 ---------------------------------------------------------------------------
 NodeDimension == 26
