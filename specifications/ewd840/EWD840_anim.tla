@@ -114,8 +114,10 @@ Messages ==
 ---------------------------------------------------------------------------
 Animation == SVGElemToString(Group(<<Labels, RingNetwork, TokenNetwork, Messages>>, <<>>))
 
-Alias == [ anim |-> 
-"<svg viewBox='-80 0 300 300'>" \o Animation \o "</svg>"]
+Alias == [ 
+    toolbox |-> Animation,
+    eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Animation \o "</svg>"
+    ]
 
 ---------------------------------------------------------------------------
 
@@ -125,10 +127,12 @@ AnimInv == terminationDetected => TLCGet("level") < 20
 
 =============================================================================
 
-## Check the spec with `Alias` configured as `ALIAS` in EWD840_anim.cfg.
-## Remove the ugly qoutes are the chars that represent the elements in the
-## buffer with sed.
-/opt/toolbox/tla2tools.jar -simulate EWD840_anim | sed 's/\\"//g' | awk 'match($0,/<svg.*<\/svg>/) { n += 1; print substr($0,RSTART,RLENGTH) > n ".svg" }'
+## Assuming the most recent Toolbox nightly build (https://nightly.tlapl.us/dist)
+## installed to /opt/toolbox.  On macOS, install gawk with `brew install gawk` 
+## (default nawk does not like the match).
+
+/opt/toolbox/tla2tools.jar -simulate EWD840_anim | gawk 'match($0,/<svg.*<\/svg>/) { n += 1; print substr($0,RSTART,RLENGTH) > n ".svg" }' && eog .
+
 
 ## The best viewer for a stack of SVGs is Gnome's Eye Of Gnome (eog) that
 ## is available for Win, macOS, and Linux.  In its preferences, one can replace
@@ -136,27 +140,57 @@ AnimInv == terminationDetected => TLCGet("level") < 20
 ## with a custom frame rate.
 
 ----
-## The commands below here have multiple issues such as broken aspect ratio,
-## wrong dimensions, ...  Most importantly though, inkscape *ignores* the 
-## visibility attribute causing a bogus animation.
 
+## Unfortunately, the MacPorts package cannot be installed
+## because of a broken dependency (https://trac.macports.org/ticket/61713).  Instead,
+## one can use the browser-based TLA+ trace Animator at https://animator.tlapl.us.
+## In this case, a slightly different awk matching is needed.  Optionally, pipe
+## output of awk directly to xclip to send it to the clipboard ("| xclip").
+
+/opt/toolbox/tla2tools.jar -simulate EWD840_anim | gawk 'match($0,/toolbox = .*/) { print "[\ntb |->" substr($0, RSTART+9, RLENGTH) "\n]," }'
+
+
+## Technical notes:
+## RSTART+9 removes "toolbox =".  Instead, prefix the match with "tb |->" 
+## that is expected by the TLA+ trace Animator.  Also, the definition
+## of Messages aboved has been changed to not use SVG's visibility tag that
+## causes problems with the TLA+ trace Animator and inkscape (see below).
+
+----
+## The commands below here have multiple issues such as broken aspect ratio,
+## wrong dimensions, ...  Most importantly though, inkscape *ignores* SVG's 
+## visibility attribute causing a bogus animation.  However, the spec above
+## no longer uses visibility=hidden in the definition of Message.
+
+## Render as gif (shows without download when clicked in the Github repo)
+
+convert -delay 100 -density 200 *.svg EWD840.gif
+
+## Technical notes:
+## convert ticks 100 times per second, thus, shows one svg per second.
+## -density 200 determines the quality and produces approximately a gif
+## with 600x600 dimensions.
+
+## Render to mp4:
 ## The svgs have transparent background.  Convert them into pngs with a
 ## suitable resolution for the video while adding a white background.
-for i in *.svg; do convert -density 1000 -resize 1920x1080 $i $i.png; done
+#for i in *.svg; do convert -density 1000 -resize 1920x1080 $i $i.png; done
 
 ## contrary to convert above, this replaces the transparent background
 ## with a lightyellow one.
-## THIS IS BROKEN!!!  Handling of the visibility tag in SVG is broken causing
+for i in *.svg; do inkscape -w 1920 -h 1920 -b lightyellow --export-png=$i.png $i; done
+
+## Technical note:  Handling of the visibility tag in SVG is broken causing
 ## visibility=hidden to be ignored:
 ## - https://gitlab.com/inkscape/inbox/-/issues/2177
 ## - https://bugs.launchpad.net/inkscape/+bug/166042
 ## - https://bugs.launchpad.net/inkscape/+bug/1577763
-for i in *.svg; do inkscape -w 1920 -h 1920 -b lightyellow --export-png=$i.png $i; done
 
 ## Render the sequence of pngs into an mp4 with two frames per second. 
 ffmpeg -r 2 -y -i %d.svg.png EWD840.mp4
 
 
 ## https://stackoverflow.com/a/25002372/6291195 partially gets the job done of
-## rendering an mp4 from the stack of SVGs.  It replaces the transparent background
-## with a white one, but the dimensions are screwed up
+## rendering an mp4 from the stack of SVGs (no png conversion needed).  It
+## replaces the transparent background with a white one, but the dimensions
+## are completely screwed up.
