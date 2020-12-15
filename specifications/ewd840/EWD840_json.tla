@@ -1,11 +1,15 @@
 ------------------------------- MODULE EWD840_json -------------------------------
-EXTENDS EWD840, 
+EXTENDS EWD840,
+        TLC,
         TLCExt, \* Trace operator &
         Json    \* JsonSerialize operator (both in CommunityModules-deps.jar)
 
 (*
   The trick is that TLC evaluates disjunct 'Export' iff 'RealInv' equals FALSE.
   JsonInv is the invariant that we have TLC check, i.e. appears in the config.
+
+  Comment e.g. the "active[i]" conjunct in EWD840!SendMsg to trigger a violation
+  of `RealInv`.
 *)
 JsonInv ==
     \/ RealInv:: Inv \* The ordinary invariant to check in EWD840 module.
