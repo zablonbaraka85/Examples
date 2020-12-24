@@ -155,7 +155,7 @@ THEOREM TPSpec => []TPTypeOK
 (***************************************************************************)
 (* We now assert that the Two-Phase Commit protocol implements the         *)
 (* Transaction Commit protocol of module $TCommit$.  The following         *)
-(* statement defines $TC!TCSpec$ to be formula $TSpec$ of module           *)
+(* statement defines $TC!TCSpec$ to be formula $TCSpec$ of module           *)
 (* $TCommit$.  (The TLA$^+$ \textsc{instance} statement is used to rename  *)
 (* the operators defined in module $TCommit$ avoids any name conflicts     *)
 (* that might exist with operators in the current module.)                 *)
