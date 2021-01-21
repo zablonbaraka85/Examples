@@ -17,18 +17,18 @@
 (***************************************************************************)
 EXTENDS Integers, Sequences, FiniteSets, Naturals, Utils
 
-CONSTANT Nodes
-ASSUME IsFiniteSet(Nodes) /\ Nodes # {}
+CONSTANT Node
+ASSUME IsFiniteSet(Node) /\ Node # {}
 
-N == Cardinality(Nodes)
+N == Cardinality(Node)
 
 \* Choose a node to be the initiator of a fresh token. We don't care which one it
 \* is as long as it is always the same.
-Initiator == CHOOSE n \in Nodes : TRUE
+Initiator == CHOOSE n \in Node : TRUE
                                          
 \* Organize Nodes in a ring. 
 RingOfNodes == 
-  CHOOSE r \in [ Nodes -> Nodes ]: IsSimpleCycle(Nodes, r)
+  CHOOSE r \in [ Node -> Node ]: IsSimpleCycle(Node, r)
 
 Color == {"white", "black"}
 
@@ -44,13 +44,13 @@ vars == <<active, color, counter, inbox>>
  
 Init ==
   (* Rule 0 *)
-  /\ counter = [n \in Nodes |-> 0] \* c properly initialized
-  /\ inbox = [n \in Nodes |-> IF n = Initiator 
+  /\ counter = [n \in Node |-> 0] \* c properly initialized
+  /\ inbox = [n \in Node |-> IF n = Initiator 
                               THEN << [type |-> "tok", q |-> 0, color |-> "black" ] >> 
                               ELSE <<>>] \* with empty channels.
   (* EWD840 *) 
-  /\ active \in [Nodes -> BOOLEAN]
-  /\ color \in [Nodes -> Color]
+  /\ active \in [Node -> BOOLEAN]
+  /\ color \in [Node -> Color]
 
 InitiateProbe ==
   (* Rule 1 *)
@@ -105,7 +105,7 @@ SendMsg(n) ==
   (* Rule 0 *)
   /\ counter' = [counter EXCEPT ![n] = @ + 1]
   \* Non-deterministically choose a receiver node.
-  /\ \E j \in Nodes \ {n} :
+  /\ \E j \in Node \ {n} :
           \* Send a message (not the token) to j.
           /\ inbox' = [inbox EXCEPT ![j] = Append(@, [type |-> "pl" ] ) ]
           \* Note that we don't blacken node i as in EWD840 if node i
@@ -142,8 +142,8 @@ Next(n) ==
   System(n) \/ Environment(n)
 
 \* Idiomatic/canonical TLA+ has existential quantification down in System and Next.
-Spec == Init /\ [][\E n \in Nodes: Next(n)]_vars
-             /\ \A n \in Nodes: WF_vars(System(n))
+Spec == Init /\ [][\E n \in Node: Next(n)]_vars
+             /\ \A n \in Node: WF_vars(System(n))
 
 -----------------------------------------------------------------------------
 \* The definitions of the refinement mapping below this line will be

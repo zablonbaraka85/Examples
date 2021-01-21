@@ -10,7 +10,7 @@ EXTENDS Integers, Sequences, FiniteSets, Utils
 CONSTANT N
 ASSUME NAssumption == N \in Nat \ {0} \* At least one node.
 
-Nodes == 0 .. N-1
+Node == 0 .. N-1
 Color == {"white", "black"}
 
 VARIABLES 
@@ -26,13 +26,13 @@ BasicMsg == [type : {"pl"}]
 Message == TokenMsg \cup BasicMsg
 
 TypeOK ==
-  /\ counter \in [Nodes -> Int]
-  /\ active \in [Nodes -> BOOLEAN]
-  /\ color \in [Nodes -> Color]
-  /\ inbox \in [Nodes -> Seq(Message)]
+  /\ counter \in [Node -> Int]
+  /\ active \in [Node -> BOOLEAN]
+  /\ color \in [Node -> Color]
+  /\ inbox \in [Node -> Seq(Message)]
   \* There is always exactly one token (singleton-type).
-  /\ \E i \in Nodes : \E j \in 1..Len(inbox[i]): inbox[i][j].type = "tok"
-  /\ \A i,j \in Nodes : \A k \in 1 .. Len(inbox[i]) : \A l \in 1 .. Len(inbox[j]) :
+  /\ \E i \in Node : \E j \in 1..Len(inbox[i]): inbox[i][j].type = "tok"
+  /\ \A i,j \in Node : \A k \in 1 .. Len(inbox[i]) : \A l \in 1 .. Len(inbox[j]) :
         inbox[i][k].type = "tok" /\ inbox[j][l].type = "tok"
         => i = j /\ k = l
 
@@ -40,13 +40,13 @@ TypeOK ==
  
 Init ==
   (* Rule 0 *)
-  /\ counter = [i \in Nodes |-> 0] \* c properly initialized
-  /\ inbox = [i \in Nodes |-> IF i = 0 
-                              THEN << [type |-> "tok", q |-> 0, color |-> "black" ] >> 
-                              ELSE <<>>] \* with empty channels.
+  /\ counter = [i \in Node |-> 0] \* c properly initialized
+  /\ inbox = [i \in Node |-> IF i = 0 
+                             THEN << [type |-> "tok", q |-> 0, color |-> "black" ] >> 
+                             ELSE <<>>] \* with empty channels.
   (* EWD840 *) 
-  /\ active \in [Nodes -> BOOLEAN]
-  /\ color \in [Nodes -> Color]
+  /\ active \in [Node -> BOOLEAN]
+  /\ color \in [Node -> Color]
 
 InitiateProbe ==
   (* Rule 1 *)
@@ -89,7 +89,7 @@ PassToken(i) ==
   /\ UNCHANGED <<active, counter>>                            
 
 System == \/ InitiateProbe
-          \/ \E i \in Nodes \ {0} : PassToken(i)
+          \/ \E i \in Node \ {0} : PassToken(i)
 
 -----------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@ SendMsg(i) ==
   (* Rule 0 *)
   /\ counter' = [counter EXCEPT ![i] = @ + 1]
   \* Non-deterministically choose a receiver node.
-  /\ \E j \in Nodes \ {i} :
+  /\ \E j \in Node \ {i} :
           \* Send a message (not the token) to j.
           /\ inbox' = [inbox EXCEPT ![j] = Append(@, [type |-> "pl" ] ) ]
           \* Note that we don't blacken node i as in EWD840 if node i
@@ -124,7 +124,7 @@ Deactivate(i) ==
   /\ active' = [active EXCEPT ![i] = FALSE]
   /\ UNCHANGED <<color, inbox, counter>>
 
-Environment == \E i \in Nodes : SendMsg(i) \/ RecvMsg(i) \/ Deactivate(i)
+Environment == \E i \in Node : SendMsg(i) \/ RecvMsg(i) \/ Deactivate(i)
 
 -----------------------------------------------------------------------------
 
@@ -155,10 +155,10 @@ StateConstraint ==
 -----------------------------------------------------------------------------
 
 (***************************************************************************)
-(* tpos \in Nodes s.t. the node's inbox contains the token.                *)
+(* tpos \in Node s.t. the node's inbox contains the token.                *)
 (***************************************************************************)
 tpos ==
-  CHOOSE i \in Nodes : \E j \in 1..Len(inbox[i]) : inbox[i][j].type = "tok"
+  CHOOSE i \in Node : \E j \in 1..Len(inbox[i]) : inbox[i][j].type = "tok"
 
 (***************************************************************************)
 (* EWD998 with channels refines EWD998 that models channels as sets.       *)
@@ -175,7 +175,7 @@ EWD998 == INSTANCE EWD998 WITH token <-
                                   \* interface that receives arbitrary messages.
                                   \* However, EWD998 only "tracks" payload (pl)
                                   \* messages.
-                                  [n \in Nodes |-> 
+                                  [n \in Node |-> 
                                      Len(SelectSeq(inbox[n], 
                                          LAMBDA msg: msg.type = "pl")) ]
 

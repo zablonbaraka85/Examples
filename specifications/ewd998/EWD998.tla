@@ -10,9 +10,9 @@ EXTENDS Integers, FiniteSets, Utils
 CONSTANT N
 ASSUME NAssumption == N \in Nat \ {0} \* At least one node.
 
-Nodes == 0 .. N-1
+Node == 0 .. N-1
 Color == {"white", "black"}
-Token == [pos : Nodes, q : Int, color : Color]
+Token == [pos : Node, q : Int, color : Color]
 
 VARIABLES 
  active,     \* activation status of nodes
@@ -24,20 +24,20 @@ VARIABLES
 vars == <<active, color, counter, pending, token>>
 
 TypeOK ==
-  /\ active \in [Nodes -> BOOLEAN]
-  /\ color \in [Nodes -> Color]
-  /\ counter \in [Nodes -> Int]
-  /\ pending \in [Nodes -> Nat]
+  /\ active \in [Node -> BOOLEAN]
+  /\ color \in [Node -> Color]
+  /\ counter \in [Node -> Int]
+  /\ pending \in [Node -> Nat]
   /\ token \in Token
 ------------------------------------------------------------------------------
  
 Init ==
   (* EWD840 but nodes *) 
-  /\ active \in [Nodes -> BOOLEAN]
-  /\ color \in [Nodes -> Color]
+  /\ active \in [Node -> BOOLEAN]
+  /\ color \in [Node -> Color]
   (* Rule 0 *)
-  /\ counter = [i \in Nodes |-> 0] \* c properly initialized
-  /\ pending = [i \in Nodes |-> 0]
+  /\ counter = [i \in Node |-> 0] \* c properly initialized
+  /\ pending = [i \in Node |-> 0]
   /\ token = [pos |-> 0, q |-> 0, color |-> "black"]
 
 InitiateProbe ==
@@ -64,7 +64,7 @@ PassToken(i) ==
   /\ UNCHANGED <<active, counter, pending>>
 
 System == \/ InitiateProbe
-          \/ \E i \in Nodes \ {0} : PassToken(i)
+          \/ \E i \in Node \ {0} : PassToken(i)
 
 -----------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ SendMsg(i) ==
   (* Rule 0 *)
   /\ counter' = [counter EXCEPT ![i] = @ + 1]
   \* Non-deterministically choose a receiver node.
-  /\ \E j \in Nodes \ {i} : pending' = [pending EXCEPT ![j] = @ + 1]
+  /\ \E j \in Node \ {i} : pending' = [pending EXCEPT ![j] = @ + 1]
           \* Note that we don't blacken node i as in EWD840 if node i
           \* sends a message to node j with j > i
   /\ UNCHANGED <<active, color, token>>
@@ -95,7 +95,7 @@ Deactivate(i) ==
   /\ active' = [active EXCEPT ![i] = FALSE]
   /\ UNCHANGED <<color, counter, pending, token>>
 
-Environment == \E i \in Nodes : SendMsg(i) \/ RecvMsg(i) \/ Deactivate(i)
+Environment == \E i \in Node : SendMsg(i) \/ RecvMsg(i) \/ Deactivate(i)
 
 -----------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ Spec == Init /\ [][Next]_vars /\ WF_vars(System)
 (* Bound the otherwise infinite state space that TLC has to check.         *)
 (***************************************************************************)
 StateConstraint ==
-  /\ \A i \in Nodes : counter[i] <= 3 /\ pending[i] <= 3
+  /\ \A i \in Node : counter[i] <= 3 /\ pending[i] <= 3
   /\ token.q <= 9
 
 -----------------------------------------------------------------------------
@@ -137,7 +137,7 @@ B == Reduce(sum, pending, 0, N-1, 0)
 (* in-flight messages.                                                     *)
 (***************************************************************************)
 Termination == 
-  /\ \A i \in Nodes : ~ active[i]
+  /\ \A i \in Node : ~ active[i]
   /\ B = 0
 
 TerminationDetection ==
@@ -167,4 +167,13 @@ Inv ==
 Liveness ==
   Termination ~> terminationDetected
 
+(***************************************************************************)
+(* The algorithm implements the specification of termination detection     *)
+(* in a ring with asynchronous communication.                              *)
+(* The parameters of module AsyncTerminationDetection are instantiated     *)
+(* by the symbols of the same name of the present module.                  *)
+(***************************************************************************)
+TD == INSTANCE AsyncTerminationDetection
+
+THEOREM Spec => TD!Spec
 =============================================================================
