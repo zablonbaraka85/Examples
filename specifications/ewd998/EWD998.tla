@@ -177,3 +177,11 @@ TD == INSTANCE AsyncTerminationDetection
 
 THEOREM Spec => TD!Spec
 =============================================================================
+
+Checked with TLC in 01/2021 with two cores on a fairly modern desktop
+and the given state constraint StateConstraint above:
+
+| N | Diameter | Distinct States | States | Time |
+| --- | --- | --- | --- | --- |
+| 3 | 60 | 1.3m | 10.1m | 42 s |
+| 4 | 105 | 219m | 2.3b | 50 m |
