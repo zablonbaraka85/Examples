@@ -8,8 +8,8 @@ EXTENDS EWD840, SVG \* Grab SVG from https://github.com/tlaplus/CommunityModules
 VARIABLES history
 
 AnimInit == 
-  /\ active \in [Nodes -> BOOLEAN]
-  /\ color \in [Nodes -> Color]
+  /\ active \in [Node -> BOOLEAN]
+  /\ color \in [Node -> Color]
   /\ tpos = N - 1 \* The token is initially always at N - 1.
   /\ tcolor = "black"
   /\ history = <<0, 0, "init">>
@@ -23,11 +23,11 @@ AnimPassToken(i) ==
   /\ history' = <<history[1], history[2], "PassToken">>
 
 AnimSystem == 
-  /\ AnimInitiateProbe \/ \E i \in Nodes \ {0} : AnimPassToken(i)
+  /\ AnimInitiateProbe \/ \E i \in Node \ {0} : AnimPassToken(i)
 
 AnimSendMsg(i) ==
   /\ active[i]
-  /\ \E j \in Nodes \ {i} :
+  /\ \E j \in Node \ {i} :
         /\ active' = [active EXCEPT ![j] = TRUE]
         /\ color' = [color EXCEPT ![i] = IF j>i THEN "black" ELSE @]
         /\ history' = <<i, j, "SendMsg">>
@@ -37,7 +37,7 @@ AnimDeactivate(i) ==
   /\ Deactivate(i)
   /\ history' = <<history[1], history[2], "Deactivate">>
 
-AnimEnvironment == \E i \in Nodes : AnimSendMsg(i) \/ AnimDeactivate(i)
+AnimEnvironment == \E i \in Node : AnimSendMsg(i) \/ AnimDeactivate(i)
                   
 AnimNext == AnimSystem \/ AnimEnvironment
 
@@ -70,7 +70,7 @@ NodeDimension == 26
 
 \* Ring Network
 RingNetwork ==
-    LET RN[ n \in Nodes ] ==         
+    LET RN[ n \in Node ] ==         
             LET coord == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, n, N)    
                 id == Text(coord.x + 10, coord.y - 5, ToString(n), Arial)
                 node == Rect(coord.x, coord.y, NodeDimension, NodeDimension,

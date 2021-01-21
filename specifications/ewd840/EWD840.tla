@@ -12,13 +12,13 @@ ASSUME NAssumption == N \in Nat \ {0}
 
 VARIABLES active, color, tpos, tcolor
 
-Nodes == 0 .. N-1
+Node == 0 .. N-1
 Color == {"white", "black"}
 
 TypeOK ==
-  /\ active \in [Nodes -> BOOLEAN]    \* status of nodes (active or passive)
-  /\ color \in [Nodes -> Color]       \* color of nodes
-  /\ tpos \in Nodes                   \* token position
+  /\ active \in [Node -> BOOLEAN]    \* status of nodes (active or passive)
+  /\ color \in [Node -> Color]       \* color of nodes
+  /\ tpos \in Node                   \* token position
   /\ tcolor \in Color                 \* token color
 
 (***************************************************************************)
@@ -26,9 +26,9 @@ TypeOK ==
 (* "type-correct" values.                                                  *)
 (***************************************************************************)
 Init ==
-  /\ active \in [Nodes -> BOOLEAN]
-  /\ color \in [Nodes -> Color]
-  /\ tpos \in Nodes
+  /\ active \in [Node -> BOOLEAN]
+  /\ color \in [Node -> Color]
+  /\ tpos \in Node
   /\ tcolor = "black"
 
 (***************************************************************************)
@@ -65,7 +65,7 @@ PassToken(i) ==
 (***************************************************************************)
 (* token passing actions controlled by the termination detection algorithm *)
 (***************************************************************************)
-System == InitiateProbe \/ \E i \in Nodes \ {0} : PassToken(i)
+System == InitiateProbe \/ \E i \in Node \ {0} : PassToken(i)
 
 (***************************************************************************)
 (* An active node i may activate another node j by sending it a message.   *)
@@ -74,7 +74,7 @@ System == InitiateProbe \/ \E i \in Nodes \ {0} : PassToken(i)
 (***************************************************************************)
 SendMsg(i) ==
   /\ active[i]
-  /\ \E j \in Nodes \ {i} :
+  /\ \E j \in Node \ {i} :
         /\ active' = [active EXCEPT ![j] = TRUE]
         /\ color' = [color EXCEPT ![i] = IF j>i THEN "black" ELSE @]
   /\ UNCHANGED <<tpos, tcolor>>
@@ -90,7 +90,7 @@ Deactivate(i) ==
 (***************************************************************************)
 (* actions performed by the underlying algorithm                           *)
 (***************************************************************************)
-Environment == \E i \in Nodes : SendMsg(i) \/ Deactivate(i)
+Environment == \E i \in Node : SendMsg(i) \/ Deactivate(i)
 
 (***************************************************************************)
 (* next-state relation: disjunction of above actions                       *)
@@ -119,13 +119,13 @@ terminationDetected ==
   /\ color[0] = "white" /\ ~ active[0]
 
 TerminationDetection ==
-  terminationDetected => \A i \in Nodes : ~ active[i]
+  terminationDetected => \A i \in Node : ~ active[i]
 
 (***************************************************************************)
 (* Liveness property: termination is eventually detected.                  *)
 (***************************************************************************)
 Liveness ==
-  (\A i \in Nodes : ~ active[i]) ~> terminationDetected
+  (\A i \in Node : ~ active[i]) ~> terminationDetected
 
 (***************************************************************************)
 (* The following property asserts that when every process always           *)
@@ -133,7 +133,7 @@ Liveness ==
 (* It does not hold since processes can wake up each other.                *)
 (***************************************************************************)
 FalseLiveness ==
-  (\A i \in Nodes : []<> ~ active[i]) ~> terminationDetected
+  (\A i \in Node : []<> ~ active[i]) ~> terminationDetected
 
 (***************************************************************************)
 (* The following property says that eventually all nodes will terminate    *)
@@ -145,13 +145,13 @@ FalseLiveness ==
 (***************************************************************************)
 SpecWFNext == Init /\ [][Next]_vars /\ WF_vars(Next)
 AllNodesTerminateIfNoMessages ==
-  <>[][\A i \in Nodes : ~ SendMsg(i)]_vars => <>(\A i \in Nodes : ~ active[i])
+  <>[][\A i \in Node : ~ SendMsg(i)]_vars => <>(\A i \in Node : ~ active[i])
 
 (***************************************************************************)
 (* Dijkstra's inductive invariant                                          *)
 (***************************************************************************)
 Inv == 
-  \/ P0:: \A i \in Nodes : tpos < i => ~ active[i]
+  \/ P0:: \A i \in Node : tpos < i => ~ active[i]
   \/ P1:: \E j \in 0 .. tpos : color[j] = "black"
   \/ P2:: tcolor = "black"
 
@@ -162,7 +162,17 @@ Inv ==
 (* initial condition by that conjunction.                                  *)
 (***************************************************************************)
 CheckInductiveSpec == TypeOK /\ Inv /\ [][Next]_vars
+
+(***************************************************************************)
+(* The algorithm implements the high-level specification of termination    *)
+(* detection in a ring with synchronous communication between nodes.       *)
+(* Note that the parameters of the module SyncTerminationDetection are     *)
+(* instantiated by the symbols of the same name in the present module.     *)
+(***************************************************************************)
+TD == INSTANCE SyncTerminationDetection
+
+THEOREM Spec => TD!Spec
 =============================================================================
 \* Modification History
-\* Last modified Tue Jun 28 18:17:45 CEST 2016 by merz
+\* Last modified Thu Jan 21 16:09:40 CET 2021 by merz
 \* Created Mon Sep 09 11:33:10 CEST 2013 by merz
