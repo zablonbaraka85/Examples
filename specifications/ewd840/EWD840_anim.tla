@@ -138,8 +138,8 @@ AnimInv == terminationDetected => TLCGet("level") < 20
 
 ----
 
-## Unfortunately, the MacPorts package cannot be installed
-## because of a broken dependency (https://trac.macports.org/ticket/61713).  Instead,
+## Unfortunately, the MacPorts package cannot be easily installed because of the
+## broken dependency https://trac.macports.org/ticket/61713 (see below).  Instead,
 ## one can use the browser-based TLA+ trace Animator at https://animator.tlapl.us.
 ## In this case, a slightly different awk matching is needed.  Optionally, pipe
 ## output of awk directly to xclip to send it to the clipboard ("| xclip").
@@ -152,6 +152,16 @@ AnimInv == terminationDetected => TLCGet("level") < 20
 ## that is expected by the TLA+ trace Animator.  Also, the definition
 ## of Messages aboved has been changed to not use SVG's visibility tag that
 ## causes problems with the TLA+ trace Animator and inkscape (see below).
+
+----
+## Install eog on macOS Big Sur x86_64 (doesn't work on arm64):
+## a) `port install gupnp-igd` until it fails
+## b) Patch `configure` according to https://trac.macports.org/ticket/61713#comment:5
+## c) Rerun `port install gupnp-igd` with patched `configure`
+## d) `port install neon configure.cflags=-Wno-error=all according to https://trac.macports.org/ticket/61483#comment:14
+## e) `port install eog`
+## f) `port install xorg-server`
+## g) Run X server with `X` and open `eog` in a second terminal
 
 ----
 ## The commands below here have multiple issues such as broken aspect ratio,
