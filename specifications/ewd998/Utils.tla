@@ -31,6 +31,11 @@ RemoveAt(s, i) ==
 Range(f) ==
   { f[x] : x \in DOMAIN f }
 
+(***************************************************************************)
+(* The inverse of a function.                                              *)
+(***************************************************************************)
+Inverse(f,S,T) == [t \in T |-> CHOOSE s \in S : t \in Range(f) => f[s] = t]
+
 \* No support for RECURSIVE in PlusPy.
 IsSimpleCycle(S, r) ==
   (* View r as a graph s.t. S is the graph's set of vertices and there 

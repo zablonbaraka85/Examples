@@ -13,7 +13,7 @@ INVARIANT
 ==================================================================================
 
 ------------------------------- MODULE EWD998_anim -------------------------------
-EXTENDS EWD998ChanID, SVG, Functions, TLC
+EXTENDS EWD998ChanID, SVG, TLC
 
 token == EWD998Chan!token
 tpos == EWD998Chan!tpos
