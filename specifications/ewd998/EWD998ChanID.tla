@@ -8,6 +8,8 @@
 (*  - The initiator of tokens no longer is node 0 but an arbitrarily       *)
 (*    choosen one.                                                         *)
 (*                                                                         *)
+(*  - The payload message "pl" contains the message sender "src".          *)
+(*                                                                         *)
 (* Minor differences:                                                      *)
 (*  - In the interest of conciseness, the spec drops a few definitions     *)
 (*    that are found in the high-level spec EWD998Chan.                    *)
@@ -107,7 +109,7 @@ SendMsg(n) ==
   \* Non-deterministically choose a receiver node.
   /\ \E j \in Node \ {n} :
           \* Send a message (not the token) to j.
-          /\ inbox' = [inbox EXCEPT ![j] = Append(@, [type |-> "pl" ] ) ]
+          /\ inbox' = [inbox EXCEPT ![j] = Append(@, [type |-> "pl", src |-> n ] ) ]
           \* Note that we don't blacken node i as in EWD840 if node i
           \* sends a message to node j with j > i
   /\ UNCHANGED <<active, color>>                            
@@ -160,6 +162,12 @@ nat2node[i \in 0..N-1 ] ==
 Node2Nat(fcn) ==
   [ i \in 0..N-1 |->  fcn[nat2node[i]] ]
 
+MapSeq(seq, Op(_)) ==
+    LET F[i \in 0..Len(seq)] == IF i = 0
+                                THEN << >>
+                                ELSE Append(F[i - 1], Op(seq[i]))
+    IN F[Len(seq)]
+
 (***************************************************************************)
 (* EWD998ChanID (identifier) refines EWD998Chan where nodes are modelled   *)
 (* with naturals \in 0..N-1. To check that EWD998ChanID is a correct       *)
@@ -169,7 +177,16 @@ Node2Nat(fcn) ==
 EWD998Chan == INSTANCE EWD998Chan WITH active <- Node2Nat(active),
                                         color <- Node2Nat(color),
                                       counter <- Node2Nat(counter),
-                                        inbox <- Node2Nat(inbox)
+                                        inbox <- Node2Nat(
+                                            \* Drop the src from the payload
+                                            \* message.
+                                            [n \in DOMAIN inbox |->
+                                                MapSeq(inbox[n], 
+                                                LAMBDA m: 
+                                                IF m.type = "pl" 
+                                                THEN [type |-> "pl"] 
+                                                ELSE m) 
+                                            ])
 
 THEOREM Spec => EWD998Chan!Spec
 
