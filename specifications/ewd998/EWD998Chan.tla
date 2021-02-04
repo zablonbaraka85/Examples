@@ -160,15 +160,17 @@ StateConstraint ==
 tpos ==
   CHOOSE i \in Node : \E j \in 1..Len(inbox[i]) : inbox[i][j].type = "tok"
 
+token ==
+    LET idx == CHOOSE i \in 1 .. Len(inbox[tpos]): inbox[tpos][i].type = "tok"
+    IN inbox[tpos][idx]
+
 (***************************************************************************)
 (* EWD998 with channels refines EWD998 that models channels as sets.       *)
 (***************************************************************************)
 EWD998 == INSTANCE EWD998 WITH token <-
-                                  LET tkn == CHOOSE i \in 1 .. Len(inbox[tpos]):
-                                                     inbox[tpos][i].type = "tok"
-                                  IN  [pos   |-> tpos, 
-                                       q     |-> inbox[tpos][tkn].q,
-                                       color |-> inbox[tpos][tkn].color],
+                                  [pos   |-> tpos, 
+                                   q     |-> token.q,
+                                   color |-> token.color],
                                pending <-
                                   \* Count the in-flight "pl" messages. The 
                                   \* inbox variable represents a node's network
