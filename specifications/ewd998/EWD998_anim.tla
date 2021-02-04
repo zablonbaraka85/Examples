@@ -1,6 +1,6 @@
 ------------------------------- CONFIG EWD998_anim -------------------------------
 CONSTANTS
-    N = 5
+    Node = {"a", "b", "c", "d", "e", "f"} 
 
 SPECIFICATION 
     Spec
@@ -13,19 +13,12 @@ INVARIANT
 ==================================================================================
 
 ------------------------------- MODULE EWD998_anim -------------------------------
-EXTENDS EWD998, SVG, TLC \* Grab SVG from https://github.com/tlaplus/CommunityModules/
+EXTENDS EWD998ChanID, SVG, Functions, TLC
 
-IsSend ==
-    \* These are exactly the two variables changed by SendMessage and by SM only.
-    /\ counter # counter'
-    /\ pending # pending'
-    /\ UNCHANGED <<color, token, active>>
+token == EWD998Chan!token
+tpos == EWD998Chan!tpos
 
-From == 
-    CHOOSE i \in DOMAIN counter: counter[i] # counter[i]'
-
-To ==
-    CHOOSE i \in DOMAIN pending: pending[i] # pending[i]'
+node2nat == Inverse(nat2node, EWD998Chan!Node, Node)
 
 ---------------------------------------------------------------------------
 
@@ -51,26 +44,30 @@ Labels == Group(<<Text(LegendBasePos.x, LegendBasePos.y, "Circle: Active, Black:
 ---------------------------------------------------------------------------
 NodeDimension == 26
 
+\* Centers the line/circle at the center of a node instead of
+\* a node's left upper corner (which are its 0:0 coordinates).
+ArrowPosOffset == NodeDimension \div 2
+
 \* Ring Network
 RingNetwork ==
     LET RN[ n \in Node ] ==         
-            LET coord == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, n, N)    
-                id == Text(coord.x + 10, coord.y - 5, ToString(n), Arial)
+            LET coord == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, node2nat[n], N)    
+                id == Text(coord.x + ArrowPosOffset + 2, coord.y + ArrowPosOffset + 7, ToString(counter[n]), 
+                                                Arial @@ [fill |-> CHOOSE c \in Color : c # color[n]])
                 node == Rect(coord.x, coord.y, NodeDimension, NodeDimension,
                                             \* round (rx=15) if node is active.
                                             [rx |-> IF ~active[n] THEN "0" ELSE "15",
-                                            stroke |-> "black", 
+                                            stroke |-> "black",
                                             fill |-> color[n]])
             IN Group(<<node, id>>, ("transform" :> "translate(0 125)"))
     IN Group(RN, <<>>)
 
 ---------------------------------------------------------------------------
-\* Token ring (with larger radius than ring above and only for the node that currently holds the token).
+\* Token ring (with larger radius than ring above and only visible at the node that currently holds the token).
 TokenNetwork ==     
-    LET coord == NodeOfRingNetwork(TokenBasePos.w, TokenBasePos.h, TokenBasePos.r, token.pos, N)    
-        circ  == Circle(coord.x, coord.y, 8, [stroke |-> "black", fill |-> token.color])
-        id    == Text(coord.x - 3, coord.y + 3, ToString(token.q), 
-           [font |-> "Arial", fill |-> IF token.color = "black" THEN "white" ELSE "black" ])
+    LET coord == NodeOfRingNetwork(TokenBasePos.w, TokenBasePos.h, TokenBasePos.r, tpos, N)    
+        circ  == Circle(coord.x-2, coord.y, 8, [stroke |-> "black", fill |-> token.color])
+        id    == Text(coord.x - 5, coord.y + 3, ToString(token.q), [font |-> "Arial", fill |-> CHOOSE c \in Color : c # token.color ])
     \* Group always expects a sequence!
     IN Group(<<circ, id>>, ("transform" :> "translate(0 125)"))
 
@@ -79,19 +76,21 @@ TokenNetwork ==
 \* of message flow but SVG doesn't natively has arrows.  This is why we use a lollipop instead where the ball
 \* replaces the arrowhead. 
 
-\* Centers the line/circle at the center of a node instead of
-\* a node's left upper corner (which are its 0:0 coordinates).
-ArrowPosOffset == NodeDimension \div 2
-
 Messages ==
-    LET from == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, From, N)
-        to   == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, To, N)
-        circ == Circle(to.x + ArrowPosOffset, to.y + ArrowPosOffset, 3, 
-                        [stroke |-> "orange", fill |-> "orange"])  
-        line == Line(from.x + ArrowPosOffset, from.y + ArrowPosOffset, 
-                        to.x + ArrowPosOffset, to.y + ArrowPosOffset, 
-                        [stroke |-> "orange"])
-    IN Group(IF IsSend THEN <<line, circ>> ELSE <<>>, ("transform" :> "translate(0 125)"))
+    LET M[ n \in Node ] ==
+        LET pls == Range(SelectSeq(inbox[n], LAMBDA msg: msg.type = "pl"))
+            plsN == Range(SelectSeq(inbox'[n], LAMBDA msg: msg.type = "pl"))
+            I[ pl \in pls ] ==
+                LET from == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, node2nat[pl.src], N)
+                    to   == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, node2nat[n], N)
+                    circ == Circle(to.x + ArrowPosOffset, to.y + ArrowPosOffset, 3, 
+                                    [stroke |-> "orange", fill |-> "orange"])  
+                    line == Line(from.x + ArrowPosOffset, from.y + ArrowPosOffset, 
+                                    to.x + ArrowPosOffset, to.y + ArrowPosOffset, 
+                                    [stroke |-> "orange", stroke_dasharray |-> IF pl \in plsN THEN "5" ELSE "0"])
+                IN Group(<<line(*, circ*)>>, ("transform" :> "translate(0 125)"))
+        IN Group(I, <<>>)
+    IN Group(M, <<>>)
 
 ---------------------------------------------------------------------------
 Animation == SVGElemToString(Group(<<Labels, RingNetwork, TokenNetwork, Messages>>, <<>>))
@@ -106,7 +105,7 @@ Alias == [
 
 \* Property that leads to interesting traces when animated.
 
-AnimInv == terminationDetected => TLCGet("level") < 20 
+AnimInv == EWD998Chan!EWD998!terminationDetected => TLCGet("level") < 20 
 
 =============================================================================
 
