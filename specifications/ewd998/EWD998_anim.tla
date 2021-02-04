@@ -37,7 +37,7 @@ TokenBasePos == [ w |-> RingBasePos.w + 12,
 \* Labels
 
 Labels == Group(<<Text(LegendBasePos.x, LegendBasePos.y, "Circle: Active, Black: Tainted", Arial),
-                  Text(LegendBasePos.x, LegendBasePos.y + 20, "Line: Message, Dot: Receiver", Arial),
+                  Text(LegendBasePos.x, LegendBasePos.y + 20, "Line: Message, Arrow: Receiver", Arial),
                   Text(LegendBasePos.x, LegendBasePos.y + 40, "Level: " \o ToString(TLCGet("level")), Arial)>>,
                   <<>>)
 
@@ -83,21 +83,24 @@ Messages ==
             I[ pl \in pls ] ==
                 LET from == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, node2nat[pl.src], N)
                     to   == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, node2nat[n], N)
-                    circ == Circle(to.x + ArrowPosOffset, to.y + ArrowPosOffset, 3, 
-                                    [stroke |-> "orange", fill |-> "orange"])  
                     line == Line(from.x + ArrowPosOffset, from.y + ArrowPosOffset, 
                                     to.x + ArrowPosOffset, to.y + ArrowPosOffset, 
-                                    [stroke |-> "orange", stroke_dasharray |-> IF pl \in plsN THEN "5" ELSE "0"])
-                IN Group(<<line(*, circ*)>>, ("transform" :> "translate(0 125)"))
+                                    [stroke |-> "orange", stroke_dasharray |-> IF pl \in plsN THEN "5" ELSE "0",
+                                     marker_end |-> "url(#arrow)"]) \* See Defs below for the definition of arrow.
+                IN Group(<<line>>, ("transform" :> "translate(0 125)"))
         IN Group(I, <<>>)
     IN Group(M, <<>>)
 
 ---------------------------------------------------------------------------
 Animation == SVGElemToString(Group(<<Labels, RingNetwork, TokenNetwork, Messages>>, <<>>))
 
+\* This is just the arrow head that's used by the Message definition above as an attribute.
+Defs ==
+    "<defs><marker id='arrow' markerWidth='15' markerHeight='15' refX='0' refY='3' orient='auto' markerUnits='strokeWidth' viewBox='0 0 20 20'><path d='M0,0 L0,6 L9,3 z' fill='orange' /></marker></defs>"
+
 Alias == [ 
     \* toolbox |-> Animation,
-    eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Animation \o "</svg>"
+    eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Defs \o Animation \o "</svg>"
     \* foob |-> [i \in 1..20 |-> i]
     ]
 

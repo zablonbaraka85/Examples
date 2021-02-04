@@ -61,7 +61,7 @@ TokenBasePos == [ w |-> RingBasePos.w + 12,
 \* Labels
 
 Labels == Group(<<Text(LegendBasePos.x, LegendBasePos.y, "Circle: Active, Black: Tainted", Arial),
-                  Text(LegendBasePos.x, LegendBasePos.y + 20, "Line: Message, Dot: Receiver", Arial),
+                  Text(LegendBasePos.x, LegendBasePos.y + 20, "Line: Message, Arrow: Receiver", Arial),
                   Text(LegendBasePos.x, LegendBasePos.y + 40, "Level: " \o ToString(TLCGet("level")), Arial)>>,
                   <<>>)
 
@@ -101,19 +101,22 @@ ArrowPosOffset == NodeDimension \div 2
 Messages ==
     LET from == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, history[1], N)
         to   == NodeOfRingNetwork(RingBasePos.w, RingBasePos.h, RingBasePos.r, history[2], N)
-        circ == Circle(to.x + ArrowPosOffset, to.y + ArrowPosOffset, 3, 
-                        [stroke |-> "orange", fill |-> "orange"])  
         line == Line(from.x + ArrowPosOffset, from.y + ArrowPosOffset, 
                         to.x + ArrowPosOffset, to.y + ArrowPosOffset, 
-                        [stroke |-> "orange"])
-    IN Group(IF history[3] = "SendMsg" THEN <<line, circ>> ELSE <<>>, ("transform" :> "translate(0 125)"))
+                        [stroke |-> "orange", marker_end |-> "url(#arrow)"])
+    IN Group(IF history[3] = "SendMsg" THEN <<line>> ELSE <<>>, ("transform" :> "translate(0 125)"))
 
 ---------------------------------------------------------------------------
+\* This is just the arrow head that's used by the Message definition above as an attribute.
+Defs ==
+    "<defs><marker id='arrow' markerWidth='15' markerHeight='15' refX='0' refY='3' orient='auto' markerUnits='strokeWidth' viewBox='0 0 20 20'><path d='M0,0 L0,6 L9,3 z' fill='orange' /></marker></defs>"
+
 Animation == SVGElemToString(Group(<<Labels, RingNetwork, TokenNetwork, Messages>>, <<>>))
 
 Alias == [ 
-    toolbox |-> Animation,
-    eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Animation \o "</svg>"
+    \* toolbox |-> Animation,
+    eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Defs \o Animation \o "</svg>"
+    \* foob |-> [i \in 1..20 |-> i]
     ]
 
 ---------------------------------------------------------------------------
