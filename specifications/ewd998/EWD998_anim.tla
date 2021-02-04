@@ -38,7 +38,8 @@ TokenBasePos == [ w |-> RingBasePos.w + 12,
 
 Labels == Group(<<Text(LegendBasePos.x, LegendBasePos.y, "Circle: Active, Black: Tainted", Arial),
                   Text(LegendBasePos.x, LegendBasePos.y + 20, "Line: Message, Arrow: Receiver", Arial),
-                  Text(LegendBasePos.x, LegendBasePos.y + 40, "Level: " \o ToString(TLCGet("level")), Arial)>>,
+                  Text(LegendBasePos.x, LegendBasePos.y + 40, "Dashed: In-Flight, Solid: Arrival in next", Arial),
+                  Text(LegendBasePos.x, LegendBasePos.y + 60, "Level: " \o ToString(TLCGet("level")), Arial)>>,
                   <<>>)
 
 ---------------------------------------------------------------------------
