@@ -1,5 +1,5 @@
 ------------------------------- MODULE EWD840_anim -------------------------------
-EXTENDS EWD840, SVG \* Grab SVG from https://github.com/tlaplus/CommunityModules/
+EXTENDS EWD840, SVG, TLC, Sequences, Integers \* Grab SVG from https://github.com/tlaplus/CommunityModules/
 
 \* In order to show messages, we need a (auxiliary) history variable to remember
 \* the occurrence of a SendMsg step including the sender and receiver of a message.
