@@ -102,7 +102,6 @@ Defs ==
 Alias == [ 
     \* toolbox |-> Animation,
     eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Defs \o Animation \o "</svg>"
-    \* foob |-> [i \in 1..20 |-> i]
     ]
 
 ---------------------------------------------------------------------------
