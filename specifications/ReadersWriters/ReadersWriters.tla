@@ -1,5 +1,9 @@
 -------------------------- MODULE ReadersWriters --------------------------
-
+(***************************************************************************)
+(* This solution to the readers-writers problem, cf.                       *)
+(* https://en.wikipedia.org/wiki/Readers–writers_problem,                  *)
+(* uses a queue in order to fairly serve all requests.                     *)
+(***************************************************************************)
 EXTENDS FiniteSets, Naturals, Sequences
 
 CONSTANT NumActors
@@ -84,8 +88,8 @@ Next ==
     \/ Stop
 
 Fairness ==
-    /\ \A actor \in Actors : SF_vars(TryRead(actor))
-    /\ \A actor \in Actors : SF_vars(TryWrite(actor))
+    /\ \A actor \in Actors : WF_vars(TryRead(actor))
+    /\ \A actor \in Actors : WF_vars(TryWrite(actor))
     /\ WF_vars(ReadOrWrite)
     /\ WF_vars(Stop)
 
@@ -113,7 +117,7 @@ Safety ==
 Liveness ==
     /\ \A actor \in Actors : []<>(actor \in readers)
     /\ \A actor \in Actors : []<>(actor \in writers)
-    /\ \A actor \in Actors : actor \in readers ~> <>(actor \notin readers)
-    /\ \A actor \in Actors : actor \in writers ~> <>(actor \notin writers)
+    /\ \A actor \in Actors : []<>(actor \notin readers)
+    /\ \A actor \in Actors : []<>(actor \notin writers)
 
 ============================================================================
