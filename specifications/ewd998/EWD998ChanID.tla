@@ -188,6 +188,9 @@ EWD998Chan == INSTANCE EWD998Chan WITH active <- Node2Nat(active),
                                                 ELSE m) 
                                             ])
 
-THEOREM Spec => EWD998Chan!Spec
+EWD998ChanStateConstraint == EWD998Chan!StateConstraint
+EWD998ChanSpec == EWD998Chan!Spec
+
+THEOREM Spec => EWD998ChanSpec
 
 =============================================================================
