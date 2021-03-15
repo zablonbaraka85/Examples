@@ -28,16 +28,34 @@
 (* 13 the German smokes Prince                                       *)
 (* 14 the Norwegian lives next to the blue house                     *)
 (* 15 the man who smokes blend has a neighbor who drinks water       *)
+(*                                                                   *)
+(* Question:                                                         *)
+(*  Who owns the fish?                                               *)
 (*********************************************************************)
 
 EXTENDS Naturals, FiniteSets
 
-CONSTANTS
-    NATIONALITIES,  \* { "brit", "swede", "dane", "norwegian", "german" }
-    COLORS,         \* { "red", "white", "blue", "green", "yellow" }
-    PETS,           \* { "bird", "cat", "dog", "fish", "horse" }
-    CIGARS,         \* { "blend", "bm", "dh", "pm", "prince" }
-    DRINKS          \* { "beer", "coffee", "mylk", "tea", "water" }
+\* Note that TLC!Permutations has a Java module override and, thus,
+\* would be evaluated faster.  However, TLC!Permutations equals a
+\* set of records whereas Permutation below equals a set of tuples/
+\* sequences.  Also, Permutation expects Cardinality(S) = 5.
+Permutation(S) == 
+    { p \in [ 1..5 -> S ] :
+        /\ p[2] \in S \ {p[1]}
+        /\ p[3] \in S \ {p[1], p[2]}
+        /\ p[4] \in S \ {p[1], p[2], p[3]}
+        /\ p[5] \in S \ {p[1], p[2], p[3], p[4]} }
+                
+\* In most specs, the following parameterization would be defined as
+\* constants.  Given that Einstein's riddle has only this
+\* parameterization, the constants are replaced with constant-level
+\* operators.  As a side-effect, TLC evaluates them eagerly at startup, 
+\* and Apalache successfully determines their types.
+NATIONALITIES == Permutation({ "brit", "swede", "dane", "norwegian", "german" })
+DRINKS == Permutation({ "beer", "coffee", "mylk", "tea", "water" })
+COLORS == Permutation({ "red", "white", "blue", "green", "yellow" })
+PETS == Permutation({ "bird", "cat", "dog", "fish", "horse" })
+CIGARS == Permutation({ "blend", "bm", "dh", "pm", "prince" })
 
 VARIABLES
     nationality,    \* tuple of nationalities
@@ -97,21 +115,17 @@ BlendSmokerHasWaterDrinkingNeighbor ==
 (* Solution *)
 (************)
 
-Permutation(S) ==
-    { p \in [ 1..5 -> S ] :
-        /\ p[2] \in S \ {p[1]}
-        /\ p[3] \in S \ {p[1], p[2]}
-        /\ p[4] \in S \ {p[1], p[2], p[3]}
-        /\ p[5] \in S \ {p[1], p[2], p[3], p[4]} }
-
 Init ==
-    /\ drinks \in { p \in Permutation(DRINKS) : p[3] = "mylk" }
-    /\ nationality \in { p \in Permutation(NATIONALITIES) : p[1] = "norwegian" }
-    /\ colors \in { p \in Permutation(COLORS) : p[2] = "blue" }
-    /\ pets \in Permutation(PETS)
-    /\ cigars \in Permutation(CIGARS)
+    /\ drinks \in { p \in DRINKS : p[3] = "mylk" }
+    /\ nationality \in { p \in NATIONALITIES : p[1] = "norwegian" }
+    /\ colors \in { p \in COLORS : p[2] = "blue" }
+    /\ pets \in PETS
+    /\ cigars \in CIGARS
 
-Spec == Init /\ [][FALSE]_<<nationality, colors, cigars, pets, drinks>>
+Next ==
+    UNCHANGED <<nationality, colors, cigars, pets, drinks>>
+
+Spec == Init /\ [][Next]_<<nationality, colors, cigars, pets, drinks>>
 
 Solution ==
     /\ BritLivesInTheRedHouse
