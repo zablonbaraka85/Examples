@@ -88,7 +88,8 @@ Do you have your own case study that you like to share with the community? Send 
 | 74 | Sliding puzzles | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/SlidingPuzzles">Sliding puzzles</a> | Mariusz Ryndzionek |   | &#10004; | Integers ||
 | 75 | Lock-Free Set | <a href="https://github.com/tlaplus/tlaplus/blob/master/tlatools/org.lamport.tlatools/src/tlc2/tool/fp/OpenAddressing.tla">PlusCal spec of a lock-Free set used by TLC</a> | Markus Kuppe |   | &#10004; | Sequences, FiniteSets, Integers, TLC | &#10004; |
 | 76 | Chameneos | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/Chameneos">Chameneos, a Concurrency Game</a> | Mariusz Ryndzionek |   | &#10004; | Integers ||
-| 77 | ParallelRaft | <a                                         href="https://github.com/HappyCS-Gu/Parallel-Raft-tla">A variant of Raft</a> | Xiaosong Gu, Hengfeng Wei, Yu Huang | | &#10004; | Integers, FiniteSets, Sequences, Naturals ||
+| 77 | ParallelRaft | <a href="https://github.com/HappyCS-Gu/Parallel-Raft-tla">A variant of Raft</a> | Xiaosong Gu, Hengfeng Wei, Yu Huang | | &#10004; | Integers, FiniteSets, Sequences, Naturals ||
+| 78 | TLC MC | <a href="https://github.com/tlaplus/Examples/tree/master/specifications/TLC">PlusCal spec of safety checking as implemented in TLC</a> | Markus Kuppe | | &#10004; | Integers, FiniteSets, Sequences, TLC | &#10004; |
 
 ## License
 
