@@ -1,7 +1,7 @@
 ------------------------------- MODULE Utils -------------------------------
 EXTENDS Integers, Sequences, FiniteSets
 
-\* This are mostly copy&pasted from various TLA+ community modules at:
+\* This is mostly copy&pasted from various TLA+ community modules at:
 \* https://github.com/tlaplus/CommunityModules/modules
 
 Reduce(op(_,_), fun, from, to, base) == 
