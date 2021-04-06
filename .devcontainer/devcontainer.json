@@ -1,0 +1,17 @@
+{
+  // Install TLA+ and GraphViz extension
+  "extensions": [
+    "alygin.vscode-tlaplus",
+    "tintinweb.graphviz-interactive-preview",
+    "cssho.vscode-svgviewer",
+    "tomoki1207.pdf"
+  ],
+
+  // Use Java GC that works best with TLC.
+  "settings": {
+    "tlaplus.java.options": "-XX:+UseParallelGC"
+  },
+
+  // Install htop and graphviz (to visualize TLC state graphs) and git shorthands to reduce typing in presentations.
+  "postCreateCommand": "sudo apt-get install -y graphviz htop && git config --global alias.slog 'log --pretty=oneline --abbrev-commit' && git config --global alias.co checkout"
+}
