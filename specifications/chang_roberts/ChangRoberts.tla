@@ -119,7 +119,7 @@ Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 -----------------------------------------------------------------------------
 (* type correctness *)
 TypeOK ==
-  /\ pc \in [Node -> {"n0", "n1", "n2", "Done"}]
+  /\ pc \in [Node -> {"n0", "n1", "Done"}]
   /\ msgs \in [Node -> SUBSET {Id[n] : n \in Node}]
   /\ initiator \in [Node -> BOOLEAN]
   /\ state \in [Node -> {"cand", "lost", "won"}]
@@ -138,6 +138,6 @@ Correctness ==
 Liveness == (\E n \in Node : state[n] = "cand") => <>(\E n \in Node : state[n] = "won")
 =============================================================================
 \* Modification History
-\* Last modified Tue Apr 27 20:05:09 PDT 2021 by markus
+\* Last modified Tue Apr 27 20:05:58 PDT 2021 by markus
 \* Last modified Sat Mar 24 10:00:11 CET 2018 by merz
 \* Created Sat Apr 23 14:05:31 CEST 2016 by merz
