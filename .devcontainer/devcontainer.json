@@ -8,8 +8,12 @@
   ],
 
   // Use Java GC that works best with TLC.
+  // https://github.com/alygin/vscode-tlaplus/wiki/Automatic-Module-Parsing
   "settings": {
-    "tlaplus.java.options": "-XX:+UseParallelGC"
+    "editor.minimap.enabled": false,
+    "tlaplus.tlc.statisticsSharing": "share",
+    "tlaplus.java.options": "-XX:+UseParallelGC",
+    "[tlaplus]": {"editor.codeActionsOnSave": {"source": true} }
   },
 
   // Install htop and graphviz (to visualize TLC state graphs) and git shorthands to reduce typing in presentations.
