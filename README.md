@@ -1,5 +1,5 @@
 
-## Welcome to TLA<sup>+</sup> Examples 
+## Welcome to TLA<sup>+</sup> Examples [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--spec-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/tlaplus/examples/)
 
 The page **TLA<sup>+</sup> Examples** is a library of TLA<sup>+</sup> specifications for distributed algorithms. The webpage supplies the TLA<sup>+</sup> community with:
 

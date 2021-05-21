@@ -16,6 +16,16 @@
     "[tlaplus]": {"editor.codeActionsOnSave": {"source": true} }
   },
 
+  // The location of a Dockerfile that defines the contents of the container.
+  // The path is relative to the devcontainer.json file. 
+  // https://code.visualstudio.com/docs/remote/devcontainerjson-reference
+  "build": {
+    "dockerfile": "../.gitpod.Dockerfile",
+  },
+
+  // The username of the user used in the above "dockerfile" image
+  "remoteUser": "gitpod",
+
   // Install htop and graphviz (to visualize TLC state graphs) and git shorthands to reduce typing in presentations.
-  "postCreateCommand": "sudo apt-get install -y graphviz htop && git config --global alias.slog 'log --pretty=oneline --abbrev-commit' && git config --global alias.co checkout"
+  "postCreateCommand": "git config --global alias.slog 'log --pretty=oneline --abbrev-commit' && git config --global alias.co checkout"
 }
