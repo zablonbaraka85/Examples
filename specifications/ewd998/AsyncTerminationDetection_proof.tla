@@ -69,6 +69,22 @@ THEOREM Stability == Spec => Stable
        DEF TypeOK, Safe, terminated, Next, DetectTermination, Terminate, Wakeup, SendMsg, vars
 <1>. QED  BY <1>1, TypeCorrect, Safety, PTL DEF Spec, Stable, Safe
 
+-----------------------------------------------------------------------------
+
+\* Include  SyncTerminationDetection.tla  from ../ewd840  in call to TLAPS:
+ \* tlapm -I ../ewd840 AsyncTerminationDetection_proof.tla
+
+syncActive == [n \in Node |-> active[n] \/ pending[n] # 0]
+
+STD == INSTANCE SyncTerminationDetection WITH active <- syncActive
+
+(***************************************************************************)
+
+-----------------------------------------------------------------------------
+
+\* Make TLC happy, ie., 'STD!Spec' not valid in MC.cfg.
+STDSpec == STD!Spec
+
 =============================================================================
 \* Modification History
 \* Last modified Wed Jun 02 14:19:14 PDT 2021 by markus
