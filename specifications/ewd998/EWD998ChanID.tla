@@ -38,9 +38,13 @@ VARIABLES
  active,
  color,
  counter,
- inbox
+ inbox,
+ clock
   
-vars == <<active, color, counter, inbox>>
+vars == <<active, color, counter, inbox, clock>>
+
+\* The (vector) clock is not relevant for the correctness of the algorithm.
+View == <<active, color, counter, inbox>>
 
 ------------------------------------------------------------------------------
  
@@ -53,6 +57,9 @@ Init ==
   (* EWD840 *) 
   /\ active \in [Node -> BOOLEAN]
   /\ color \in [Node -> Color]
+  (* Each node maintains a (local) vector clock *)
+  (* https://en.wikipedia.org/wiki/Vector_clock *)
+  /\ clock = [n \in Node |-> [m \in Node |-> 0] ]
 
 InitiateProbe ==
   (* Rule 1 *)
@@ -96,9 +103,13 @@ PassToken(n) ==
 
 System(n) == \/ /\ n = Initiator
                 /\ InitiateProbe
+                \* TODO: Do we attach i's vector clock along with the token?  For now, token-
+                 \* TODO: related actions are treated as internal events.
+                /\ clock' = [ clock EXCEPT ![n][n] = @ + 1 ]
              \/ /\ n # Initiator
                 /\ PassToken(n)
-
+                /\ clock' = [ clock EXCEPT ![n][n] = @ + 1 ]
+ 
 -----------------------------------------------------------------------------
 
 SendMsg(n) ==
@@ -106,10 +117,11 @@ SendMsg(n) ==
   /\ active[n]
   (* Rule 0 *)
   /\ counter' = [counter EXCEPT ![n] = @ + 1]
+  /\ clock' = [ clock EXCEPT ![n][n] = @ + 1 ]
   \* Non-deterministically choose a receiver node.
   /\ \E j \in Node \ {n} :
           \* Send a message (not the token) to j.
-          /\ inbox' = [inbox EXCEPT ![j] = Append(@, [type |-> "pl", src |-> n ] ) ]
+          /\ inbox' = [inbox EXCEPT ![j] = Append(@, [type |-> "pl", src |-> n, vc |-> clock[n]' ] ) ]
           \* Note that we don't blacken node i as in EWD840 if node i
           \* sends a message to node j with j > i
   /\ UNCHANGED <<active, color>>                            
@@ -126,11 +138,16 @@ RecvMsg(n) ==
   /\ \E j \in 1..Len(inbox[n]) : 
           /\ inbox[n][j].type = "pl"
           /\ inbox' = [inbox EXCEPT ![n] = RemoveAt(@, j) ]
+          \* This is where the "magic" of the vector clock happens.
+          /\ LET Max(a,b) == IF a < b THEN b ELSE a
+                 Merge(r, l) == [ m \in Node |-> IF m = n THEN l[m] + 1 ELSE Max(r[m], l[m]) ]
+             IN clock' = [ clock EXCEPT ![n] = Merge(inbox[n][j].vc, @) ]
   /\ UNCHANGED <<>>                           
 
 Deactivate(n) ==
   /\ active[n]
   /\ active' = [active EXCEPT ![n] = FALSE]
+  /\ clock' = [ clock EXCEPT ![n][n] = @ + 1 ]
   /\ UNCHANGED <<color, inbox, counter>>
 
 Environment(n) == 
