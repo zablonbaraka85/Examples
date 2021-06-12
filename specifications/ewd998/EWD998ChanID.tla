@@ -61,7 +61,8 @@ Init ==
   (* https://en.wikipedia.org/wiki/Vector_clock *)
   /\ clock = [n \in Node |-> [m \in Node |-> 0] ]
 
-InitiateProbe ==
+InitiateProbe(n) ==
+  /\ n = Initiator
   (* Rule 1 *)
   /\ \E j \in 1..Len(inbox[Initiator]):
       \* Token is at node the Initiator.
@@ -80,10 +81,14 @@ InitiateProbe ==
              ![Initiator] = RemoveAt(@, j) ] \* consume token message from inbox[0]. 
   (* Rule 6 *)
   /\ color' = [ color EXCEPT ![Initiator] = "white" ]
+  \* TODO: Do we attach i's vector clock along with the token?  For now, token-
+   \* TODO: related actions are treated as internal events.
+  /\ clock' = [ clock EXCEPT ![Initiator][Initiator] = @ + 1 ]
   \* The state of the nodes remains unchanged by token-related actions.
   /\ UNCHANGED <<active, counter>>                            
   
 PassToken(n) ==
+  /\ n # Initiator
   (* Rule 2 *)
   /\ ~ active[n] \* If machine i is active, keep the token.
   /\ \E j \in 1..Len(inbox[n]) : 
@@ -98,17 +103,13 @@ PassToken(n) ==
                                     ![n] = RemoveAt(@, j) ] \* pass on the token.
   (* Rule 7 *)
   /\ color' = [ color EXCEPT ![n] = "white" ]
+  \* Just increment the node's local clock on token messages.
+  /\ clock' = [ clock EXCEPT ![n][n] = @ + 1 ]
   \* The state of the nodes remains unchanged by token-related actions.
   /\ UNCHANGED <<active, counter>>                            
 
-System(n) == \/ /\ n = Initiator
-                /\ InitiateProbe
-                \* TODO: Do we attach i's vector clock along with the token?  For now, token-
-                 \* TODO: related actions are treated as internal events.
-                /\ clock' = [ clock EXCEPT ![n][n] = @ + 1 ]
-             \/ /\ n # Initiator
-                /\ PassToken(n)
-                /\ clock' = [ clock EXCEPT ![n][n] = @ + 1 ]
+System(n) == \/ InitiateProbe(n)
+             \/ PassToken(n)
  
 -----------------------------------------------------------------------------
 
