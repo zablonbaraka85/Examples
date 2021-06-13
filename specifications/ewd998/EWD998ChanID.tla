@@ -211,4 +211,12 @@ EWD998ChanSpec == EWD998Chan!Spec
 
 THEOREM Spec => EWD998ChanSpec
 
+-----------------------------------------------------------------------------
+
+StateConstraint ==
+    /\ EWD998ChanStateConstraint
+    /\ LET F == INSTANCE Functions
+       IN \A n \in Node:
+            F!FoldFunctionOnSet(sum, 0, clock[n], Node) < 3
+
 =============================================================================
