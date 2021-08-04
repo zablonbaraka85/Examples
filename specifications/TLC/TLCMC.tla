@@ -66,7 +66,7 @@ ASSUME \* The given StateGraph is actually a graph
 (***************************************************************************
 The PlusCal code of the model checker algorithm
 --fair algorithm ModelChecker {
-	variables
+    variables
               \* A FIFO containing all unexplored states. A simple
               \* set provides no order, but TLC should explore the
               \* StateGraph in either BFS (or DFS => LIFO).
@@ -79,7 +79,7 @@ The PlusCal code of the model checker algorithm
               C = {},
               \* The state currently being explored in scsr
               state = null,
-              \* The set of state's successor states	          
+              \* The set of state's successor states              
               successors = {},
               \* Counter
               i = 1,
@@ -89,7 +89,7 @@ The PlusCal code of the model checker algorithm
               \* A sequence of pairs such that a pair is a
               \* sequence <<predecessor, successors>>.
               T = <<>>;
-	{
+    {
        (* Check initial states for violations. We could
           be clever and check the inital states as part
           of the second while loop. However, we then
@@ -178,7 +178,7 @@ The PlusCal code of the model checker algorithm
                    goto Done;
                 };
        };
-	}        
+    }        
 }
  ***************************************************************************)
 \* BEGIN TRANSLATION
