@@ -100,7 +100,7 @@ Defs ==
     "<defs><marker id='arrow' markerWidth='15' markerHeight='15' refX='0' refY='3' orient='auto' markerUnits='strokeWidth' viewBox='0 0 20 20'><path d='M0,0 L0,6 L9,3 z' fill='orange' /></marker></defs>"
 
 Alias == [ 
-    \* toolbox |-> Animation,
+    toolbox |-> Animation,
     eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Defs \o Animation \o "</svg>"
     ]
 
@@ -116,7 +116,7 @@ AnimInv == EWD998Chan!EWD998!terminationDetected => TLCGet("level") < 20
 ## installed to /opt/toolbox.  On macOS, install gawk with `brew install gawk` 
 ## (default nawk does not like the match).
 
-/opt/toolbox/tla2tools.jar -simulate -noGenerateSpecTE EWD998_anim | gawk 'match($0,/<svg.*<\/svg>/) { n += 1; print substr($0,RSTART,RLENGTH) > sprintf("%03d", n) ".svg" }' && eog .
+/opt/toolbox/tla2tools.jar -simulate -noGenerateSpecTE -config EWD998_anim.tla EWD998_anim | gawk 'match($0,/<svg.*<\/svg>/) { n += 1; print substr($0,RSTART,RLENGTH) > sprintf("%03d", n) ".svg" }' && eog .
 
 
 ## The best viewer for a stack of SVGs is Gnome's Eye Of Gnome (eog) that
@@ -132,4 +132,4 @@ AnimInv == EWD998Chan!EWD998!terminationDetected => TLCGet("level") < 20
 ## In this case, a slightly different awk matching is needed.  Optionally, pipe
 ## output of awk directly to xclip to send it to the clipboard ("| xclip").
 
-/opt/toolbox/tla2tools.jar -simulate EWD998_anim | gawk 'match($0,/toolbox = .*/) { print "[\ntb |->" substr($0, RSTART+9, RLENGTH) "\n]," }'
+/opt/toolbox/tla2tools.jar -simulate -noGenerateSpecTE -config EWD998_anim.tla EWD998_anim | gawk 'match($0,/toolbox = .*/) { print "[\ntb |->" substr($0, RSTART+9, RLENGTH) "\n]," }'
