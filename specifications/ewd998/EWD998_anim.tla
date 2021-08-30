@@ -112,6 +112,30 @@ Alias == [
 
 ---------------------------------------------------------------------------
 
+AnimSpec ==
+    \* AnimSpec constraints the set of initial states to a set of states,
+    \* s.t. all nodes are inactive but have sent or received a message.
+    \* The sum of all counters is zero.  The token is at the Initiator.
+    \* The next-state relation does not permit environment (sub-) actions.
+    \* Replacing Spec with AnimSpec above, TLC can generate traces for large
+    \* numbers of nodes.
+    /\ active = [ n \in Node |-> FALSE ]
+    /\ color = [ n \in Node |-> "black" ]
+    /\ counter = [n \in Node |-> IF Cardinality(Node) % 2 = 0
+                                 THEN IF node2nat[n] % 2 = 0 
+                                      THEN 1
+                                      ELSE -1
+                                 ELSE IF n # Initiator 
+                                      THEN IF node2nat[n] % 2 = 0
+                                           THEN 1
+                                           ELSE -1
+                                      ELSE 0 ]
+    /\ inbox = [n \in Node |-> IF n  = Initiator \* RingOfNodes[Initiator] 
+                              THEN << [type |-> "tok", q |-> 0, color |-> "black" ] >> 
+                              ELSE <<>>] \* with empty channels.
+    /\ Init!5
+    /\ [][\E n \in Node: System(n)]_vars
+
 \* Property that leads to interesting traces when animated.
 
 AnimInv == EWD998Chan!EWD998!terminationDetected => TLCGet("level") < 20 
