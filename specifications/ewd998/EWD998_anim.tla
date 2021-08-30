@@ -1,6 +1,7 @@
 ------------------------------- CONFIG EWD998_anim -------------------------------
 CONSTANTS
     Node = {"a", "b", "c", "d", "e", "f"} 
+    RingOfNodes <- SomeRingOfNodes
 
 SPECIFICATION 
     Spec
@@ -14,6 +15,9 @@ INVARIANT
 
 ------------------------------- MODULE EWD998_anim -------------------------------
 EXTENDS EWD998ChanID, SVG, TLC
+
+SomeRingOfNodes ==
+    SimpleCycle(Node)
 
 token == EWD998Chan!token
 tpos == EWD998Chan!tpos
