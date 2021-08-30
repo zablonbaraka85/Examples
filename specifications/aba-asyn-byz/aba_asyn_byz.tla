@@ -126,7 +126,7 @@ Spec == Init /\ [][Next]_vars
                                            \/ Decide(self))
                                            
 Spec0 == Init0 /\ [][Next]_vars 
-               /\ WF_vars(\E self \in Proc : \/ Receive(self)
+               /\ WF_vars(\E self \in Proc : \/ Receive(self, FALSE)
                                              \/ SendEcho(self)
                                              \/ SendReady(self)
                                              \/ Decide(self))                                           
