@@ -77,12 +77,14 @@ jobs:
       run: ${{ env.TLC_COMMAND }} specifications/SpecifyingSystems/FIFO/MCInnerFIFO
     - name: Check EWD840_anim
       run: ${{ env.TLC_COMMAND }} -simulate num=1 specifications/ewd840/EWD840_anim || (($? == 12))  ## Expect a safety violation
-    - name: Check EWD840_json
-      run: ${{ env.TLC_COMMAND }} specifications/ewd840/EWD840_json
     - name: Check SyncTerminationDetection
       run: ${{ env.TLC_COMMAND }} specifications/ewd840/SyncTerminationDetection
     - name: Check EWD840
       run: ${{ env.TLC_COMMAND }} specifications/ewd840/EWD840
+    - name: Check EWD840_json
+      run: |
+        sed -i '/^SendMsg/{n;d;}' specifications/ewd840/EWD840.tla ## Cause RealInv to be violated (see EWD840_json.tla)
+        ${{ env.TLC_COMMAND }} specifications/ewd840/EWD840_json
     - name: Check MCVoting
       run: ${{ env.TLC_COMMAND }} specifications/Paxos/MCVoting
     - name: Check MCConsensus
