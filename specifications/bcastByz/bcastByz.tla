@@ -38,7 +38,8 @@ EXTENDS Naturals,
         FunctionTheorems, 
         FiniteSetTheorems,
         NaturalsInduction,
-        SequenceTheorems
+        SequenceTheorems,
+        TLAPS
         
 CONSTANTS N, T, F
 
@@ -479,7 +480,8 @@ THEOREM FCConstraints_TypeOK_Init ==
   <1> QED
     BY <1>1, <1>2, <1>3, <1>4, <1>5, <1>6, <1>7, <1>8, <1>9, 
        <1>10, <1>11, <1>12, <1>13, <1>14, <1>15, <1>16 
-             
+       
+                                        
 THEOREM FCConstraints_TypeOK_IndInv_Unforg_NoBcast ==  
   IndInv_Unforg_NoBcast => FCConstraints /\ TypeOK
   BY DEF IndInv_Unforg_NoBcast    
@@ -552,7 +554,8 @@ THEOREM FCConstraints_TypeOK_IndInv_Unforg_NoBcast_TLC ==
   <1> QED
     BY <1>1, <1>2, <1>3, <1>4, <1>5, <1>6, <1>7, <1>8, <1>9, 
        <1>10, <1>11, <1>12, <1>13, <1>14, <1>15, <1>16 
-        
+         
+          
 THEOREM FCConstraints_TypeOK_Next ==
   FCConstraints /\ TypeOK /\ [Next]_vars => FCConstraints' /\ TypeOK'
   <1> SUFFICES ASSUME FCConstraints,
@@ -654,10 +657,20 @@ THEOREM FCConstraints_TypeOK_Next ==
           <5>6 rcvd' \in [ Proc -> SUBSET (sent' \cup ByzMsgs') ]    
             <6>1 (sent \cup ByzMsgs)  \subseteq (sent' \cup ByzMsgs')
               BY <5>2, <5>4
+            <6>2 ReceiveFromAnySender(i) <=> Receive(i, TRUE)
+              BY DEF ReceiveFromAnySender  
+            <6>3 (IF TRUE THEN ByzMsgs ELSE {}) = ByzMsgs
+              OBVIOUS           
+            <6>4 Receive(i, TRUE) <=>
+                    (\E newMessages \in SUBSET ( sent \cup ByzMsgs ) :
+                        rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ])
+              BY <6>3 DEF Receive
             <6> QED             
-              BY <3>2, <6>1 DEFS UponV1, TypeOK, Receive
+              BY <3>2, <6>1, <6>2, <6>3, <6>4 DEFS UponV1, TypeOK, Receive
+           <5>7 Corr' = Corr
+            BY <3>2 DEFS UponV1
           <5> QED
-            BY <1>2, <3>2, <4>1, <5>1, <5>5, <5>6 DEF TypeOK, FCConstraints
+            BY <1>2, <3>2, <4>1, <5>1, <5>5, <5>6, <5>7 DEF TypeOK, FCConstraints
         <4> QED
           BY <4>1, <4>2       
       <3>3 CASE ReceiveFromAnySender(i) /\ UponNonFaulty(i)
@@ -686,10 +699,20 @@ THEOREM FCConstraints_TypeOK_Next ==
           <5>6 rcvd' \in [ Proc -> SUBSET (sent' \cup ByzMsgs') ]    
             <6>1 (sent \cup ByzMsgs)  \subseteq (sent' \cup ByzMsgs')
               BY <5>2, <5>4
+            <6>2 ReceiveFromAnySender(i) <=> Receive(i, TRUE)
+              BY DEF ReceiveFromAnySender  
+            <6>3 (IF TRUE THEN ByzMsgs ELSE {}) = ByzMsgs
+              OBVIOUS           
+            <6>4 Receive(i, TRUE) <=>
+                    (\E newMessages \in SUBSET ( sent \cup ByzMsgs ) :
+                        rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ])
+              BY <6>3 DEF Receive
             <6> QED             
-              BY <3>3, <6>1 DEFS UponNonFaulty, TypeOK, Receive
+              BY <3>3, <6>1, <6>2, <6>3, <6>4 DEFS UponNonFaulty, TypeOK, Receive            
+          <5>7 Corr' = Corr
+            BY <3>3 DEFS UponNonFaulty            
           <5> QED
-            BY <1>2, <3>3, <4>1, <5>1, <5>5, <5>6 DEF TypeOK, FCConstraints
+            BY <1>2, <3>3, <4>1, <5>1, <5>5, <5>6, <5>7 DEF TypeOK, FCConstraints
         <4> QED
           BY <4>1, <4>2
       <3>4 CASE ReceiveFromAnySender(i) /\ UponAcceptNotSentBefore(i)
@@ -718,10 +741,20 @@ THEOREM FCConstraints_TypeOK_Next ==
           <5>6 rcvd' \in [ Proc -> SUBSET (sent' \cup ByzMsgs') ]    
             <6>1 (sent \cup ByzMsgs)  \subseteq (sent' \cup ByzMsgs')
               BY <5>2, <5>4
+            <6>2 ReceiveFromAnySender(i) <=> Receive(i, TRUE)
+              BY DEF ReceiveFromAnySender  
+            <6>3 (IF TRUE THEN ByzMsgs ELSE {}) = ByzMsgs
+              OBVIOUS           
+            <6>4 Receive(i, TRUE) <=>
+                    (\E newMessages \in SUBSET ( sent \cup ByzMsgs ) :
+                        rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ])
+              BY <6>3 DEF Receive
             <6> QED             
-              BY <3>4, <6>1 DEFS UponAcceptNotSentBefore, TypeOK, Receive
+              BY <3>4, <6>1, <6>2, <6>3, <6>4 DEFS UponAcceptNotSentBefore, TypeOK, Receive  
+          <5>7 Corr' = Corr
+            BY <3>4 DEFS UponAcceptNotSentBefore        
           <5> QED
-            BY <1>2, <3>4, <4>1, <5>1, <5>5, <5>6 DEF TypeOK, FCConstraints
+            BY <1>2, <3>4, <4>1, <5>1, <5>5, <5>6, <5>7 DEF TypeOK, FCConstraints
         <4> QED
           BY <4>1, <4>2 
       <3>5 CASE ReceiveFromAnySender(i) /\ UponAcceptSentBefore(i)
@@ -750,10 +783,20 @@ THEOREM FCConstraints_TypeOK_Next ==
           <5>6 rcvd' \in [ Proc -> SUBSET (sent' \cup ByzMsgs') ]    
             <6>1 (sent \cup ByzMsgs)  \subseteq (sent' \cup ByzMsgs')
               BY <5>2, <5>4
+            <6>2 ReceiveFromAnySender(i) <=> Receive(i, TRUE)
+              BY DEF ReceiveFromAnySender  
+            <6>3 (IF TRUE THEN ByzMsgs ELSE {}) = ByzMsgs
+              OBVIOUS           
+            <6>4 Receive(i, TRUE) <=>
+                    (\E newMessages \in SUBSET ( sent \cup ByzMsgs ) :
+                        rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ])
+              BY <6>3 DEF Receive
             <6> QED             
-              BY <3>5, <6>1 DEFS UponAcceptSentBefore, TypeOK, Receive
+              BY <3>5, <6>1, <6>2, <6>3, <6>4 DEFS UponAcceptSentBefore, TypeOK, Receive            
+          <5>7 Corr' = Corr
+            BY <3>5 DEFS UponAcceptSentBefore 
           <5> QED
-            BY <1>2, <3>5, <4>1, <5>1, <5>5, <5>6 DEF TypeOK, FCConstraints
+            BY <1>2, <3>5, <4>1, <5>1, <5>5, <5>6, <5>7 DEF TypeOK, FCConstraints
         <4> QED
           BY <4>1, <4>2  
       <3>6 CASE ReceiveFromAnySender(i) /\ UNCHANGED << pc, sent, Corr, Faulty >>
@@ -773,8 +816,18 @@ THEOREM FCConstraints_TypeOK_Next ==
           <5>6 rcvd' \in [ Proc -> SUBSET (sent' \cup ByzMsgs') ]    
             <6>1 (sent \cup ByzMsgs)  \subseteq (sent' \cup ByzMsgs')
               BY <5>2, <5>4
+            <6>2 ReceiveFromAnySender(i) <=> Receive(i, TRUE)
+              BY DEF ReceiveFromAnySender  
+            <6>3 (IF TRUE THEN ByzMsgs ELSE {}) = ByzMsgs
+              OBVIOUS           
+            <6>4 Receive(i, TRUE) <=>
+                    (\E newMessages \in SUBSET ( sent \cup ByzMsgs ) :
+                        rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ])
+              BY <6>3 DEF Receive
             <6> QED             
-              BY <3>6, <6>1 DEFS vars, TypeOK, Receive
+              BY <3>6, <6>1, <6>2, <6>3, <6>4 DEFS vars, TypeOK, Receive
+          <5>7 Corr' = Corr
+            BY <3>6 DEFS vars   
           <5> QED        
             BY <1>2, <3>6, <3>1, <4>1, <5>5, <5>6 DEF TypeOK, FCConstraints
         <4> QED
@@ -801,6 +854,7 @@ THEOREM FCConstraints_TypeOK_SpecNoBcast == SpecNoBcast => [](FCConstraints /\ T
     BY FCConstraints_TypeOK_Next
   <1> QED
     BY <1>1, <1>2, PTL DEF SpecNoBcast     
+                                          
     
 (* The following is the main part of our proof. We prove that IndInv_Unforg_NoBcast is an
    inductive invariant.
@@ -897,8 +951,35 @@ THEOREM Unforg_Step2 == IndInv_Unforg_NoBcast /\ [Next]_vars => IndInv_Unforg_No
               BY DEF TypeOK
             <6>2 i \in Proc
               BY <6>1
-            <6>3 QED
-              BY <5>7, <6>2 DEF Receive
+            <6>3 ReceiveFromAnySender(i) <=> Receive(i, TRUE)
+              BY DEF ReceiveFromAnySender  
+            <6>4 (IF TRUE THEN ByzMsgs ELSE {}) = ByzMsgs
+              OBVIOUS           
+            <6>5 Receive(i, TRUE) <=>
+                    (\E newMessages \in SUBSET ( sent \cup ByzMsgs ) :
+                        rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ])
+              BY <6>4 DEF Receive                                      
+            <6>6 Receive(i, TRUE) <=>
+                    (\E newMessages \in SUBSET ByzMsgs :
+                        rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ])
+              BY <5>1, <6>5            
+            <6>7 Receive(i, TRUE)
+              BY <6>3      
+            <6>8 \E newMessages \in SUBSET ByzMsgs :
+                    rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ]
+              BY <6>6, <6>7                         
+            <6>9 rcvd'[i] \subseteq (rcvd[i] \cup ByzMsgs)            
+              <7>1 PICK newMessages \in SUBSET ByzMsgs : 
+                            rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ]
+                BY <6>8                                      
+              <7>2 rcvd' = [ j \in Proc |-> IF j # i THEN rcvd[j] ELSE rcvd[i] \cup newMessages ]
+                BY <7>1            
+              <7>3 rcvd'[i] = rcvd[i] \cup newMessages
+                BY <6>2, <7>2 DEF ByzMsgs                                                             
+              <7>4 QED        
+                BY <5>7, <7>3
+            <6>10 QED
+              BY <5>7, <6>9 DEF Receive, ReceiveFromAnySender
           <5>9 Cardinality(Faulty) <= T
             BY DEF FCConstraints
           <5>10 Cardinality(ByzMsgs) = Cardinality(Faulty)
@@ -964,7 +1045,7 @@ THEOREM Unforg_Step2 == IndInv_Unforg_NoBcast /\ [Next]_vars => IndInv_Unforg_No
             <6>3 Cardinality(rcvd'[i]) < N - 2 * T
               BY <4>2, <6>1, <6>2, NTFRel
             <6> QED
-              BY <5>1, NTFRel, <6>3 DEF UponNonFaulty
+              BY <5>1, NTFRel, <6>2, <6>3 DEF UponNonFaulty
           <5> QED
             BY <4>2, <5>2
         <4>6 IndInv_Unforg_NoBcast /\ ReceiveFromAnySender(i) => ~UponAcceptNotSentBefore(i) 
@@ -989,7 +1070,7 @@ THEOREM Unforg_Step2 == IndInv_Unforg_NoBcast /\ [Next]_vars => IndInv_Unforg_No
             <6>4 Cardinality(rcvd'[i]) < N - T
               BY <4>2, <6>3, NTFRel            
             <6> QED
-              BY <5>1, NTFRel, <6>4 DEF UponAcceptNotSentBefore
+              BY <5>1, NTFRel, <6>2, <6>4 DEF UponAcceptNotSentBefore
           <5> QED
             BY <4>2, <5>2
         <4>7 IndInv_Unforg_NoBcast /\ ReceiveFromAnySender(i) => ~UponAcceptSentBefore(i) 
@@ -1014,7 +1095,7 @@ THEOREM Unforg_Step2 == IndInv_Unforg_NoBcast /\ [Next]_vars => IndInv_Unforg_No
             <6>4 Cardinality(rcvd'[i]) < N - T
               BY <4>2, <6>3, NTFRel            
             <6> QED
-              BY <5>1, NTFRel, <6>4 DEF UponAcceptSentBefore
+              BY <5>1, NTFRel, <6>2, <6>4 DEF UponAcceptSentBefore
           <5> QED
             BY <4>2, <5>2                                   
         <4> QED
@@ -1058,7 +1139,7 @@ THEOREM Unforg_Step4 == SpecNoBcast => []Unforg
         
 =============================================================================
 \* Modification History
-\* Last modified Thu Feb 23 13:54:21 CET 2017 by tran
+\* Last modified Sat Sep 04 19:49:08 CEST 2021 by tran
 
 
 
