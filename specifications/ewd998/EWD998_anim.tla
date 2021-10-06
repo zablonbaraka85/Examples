@@ -14,7 +14,7 @@ INVARIANT
 ==================================================================================
 
 ------------------------------- MODULE EWD998_anim -------------------------------
-EXTENDS EWD998ChanID, SVG, TLC
+EXTENDS EWD998ChanID, SVG, TLC, IOUtils
 
 SomeRingOfNodes ==
     SimpleCycle(Node)
@@ -108,6 +108,14 @@ Defs ==
 Alias == [ 
     toolbox |-> Defs \o Animation,
     eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Defs \o Animation \o "</svg>",
+    toSVG |-> 
+        IOExecTemplate(
+            \* %%03d to escape %03d in Java format strings.
+            <<"bash", "-c", "echo \"%1$s\" > EWD998_anim_$(printf %%03d %2$s).svg">>,
+                <<"<svg viewBox='-40 15 330 290'>"
+                    \o Defs
+                    \o Animation
+                    \o "</svg>", ToString(TLCGet("level"))>>)
     ]
 
 ---------------------------------------------------------------------------
