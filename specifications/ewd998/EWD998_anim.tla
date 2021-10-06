@@ -106,8 +106,8 @@ Defs ==
     "<defs><marker id='arrow' markerWidth='15' markerHeight='15' refX='0' refY='3' orient='auto' markerUnits='strokeWidth' viewBox='0 0 20 20'><path d='M0,0 L0,6 L9,3 z' fill='orange' /></marker></defs>"
 
 Alias == [ 
-    toolbox |-> Animation,
-    eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Defs \o Animation \o "</svg>"
+    toolbox |-> Defs \o Animation,
+    eyeofgnome |-> "<svg viewBox='-80 0 300 300'>" \o Defs \o Animation \o "</svg>",
     ]
 
 ---------------------------------------------------------------------------
