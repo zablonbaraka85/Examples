@@ -40,13 +40,13 @@ In the case of EWD998, we pretend that we wish to study the efficiency of four d
 
 pt3 and pt4 can be seen as "aborting" an inconclusive token round by directly returning the token to the initiator. The two variants come at the cost of all nodes knowing the identify of the initiator.  However, this could be addressed by stamping the initiator's id onto the token under the assumption that the underlying network allows for all nodes to send a token to the initiator (i.e. not a ring).
 
-The way we are going to measure efficiency is by measuring the number of steps between termination of  [`Environment`](./EWD998ChanID.tla#L116-L157)  and the termination detection by  [`System`](./EWD998ChanID.tla#L64-L112)  (see EWD998.tla for their definitions).
+The way we are going to measure efficiency is by measuring the number of steps between termination of  [`Environment`](./EWD998ChanID.tla#L116-L157)  and the detection of termination by  [`System`](./EWD998ChanID.tla#L64-L112)  (see EWD998.tla for their definitions).
 
 ## Simulation
 
-In this section, we are going to outline the TLA+ specs that were simulated and discuss the results.
+In this section, we outline the simluation of the TLA+ specs and discuss our results.
 
-The spec [EWD99_opts.tla](./EWD99_opts.tla) extends module EWD998 (EWD998Chan actually) and, depending on the given "feature flags" `F`, enables the variants `pt1` to `pt4` in the sub-action `PassTokenOpts`:
+The spec [EWD998_opts.tla](./EWD998_opts.tla) extends module EWD998 (EWD998Chan actually) and, depending on the given "feature flags" `F`, enables the variants `pt1` to `pt4` in the sub-action `PassTokenOpts`:
 
 ```tla
 PassTokenOpts(n) ==
@@ -112,7 +112,7 @@ library(here)
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 ## here is not consistent across platforms! Prepend "specifications","ewd998" on macOS.
-data <- read.csv(header=TRUE, sep = "#", file = here("EWD998_opts_688569962.csv"))
+data <- read.csv(header=TRUE, sep = "#", file = "EWD998_opts_688569962.csv")
 summary = summarise(group_by(data,Variant, Node),
   mean_Length = mean(Length), sd_Length = sd(Length),
   mean_IP = mean(InitiateProbe), sd_IP = sd(InitiateProbe),
@@ -189,3 +189,14 @@ Variant pt4 has a slightly better worst-case behavior, but it still requires `((
 ![Worst-case termination detection with pt4 variant with eight processes](./EWD998_opts_pt4.gif)
 
 (pt1 and pt2 have no relevance on the number of token passes between termination and termination detection, because they apply to active nodes only. More importantly, with pt1 and pt2 active, the enablement of sub-action `PassTokenOpts` changes increasing the probability of the simulator choosing `PassTokenOpts` to extend the current trace.)
+
+
+#### README.md is generated from README.Rmd on a host with all libraries installed via:
+```shell
+Rscript -e "rmarkdown::render('README.Rmd')"
+```
+### Install required libraries and R packages (on macOS) with:
+```shell
+brew install pandoc r
+Rscript -e "install.packages(c('rmarkdown', 'ggplot2','dplyr', 'here'), repos='http://cran.us.r-project.org')"
+```

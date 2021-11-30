@@ -1,17 +1,21 @@
 EWD998
 ================
 Markus A Kuppe
-(2021-09-02)
+(2021-11-29)
+
+-   [Statistics](#statistics)
+-   [Simulation](#simulation)
+-   [Analytical worst-case
+    complexity](#analytical-worst-case-complexity)
 
 The [specification](./EWD998.tla) in this directory models termination
-detection in a ring as given by Shmuel Safra in
-[EWD 998](https://www.cs.utexas.edu/users/EWD/ewd09xx/EWD998.PDF). EWD
-998 is an extension of a simpler algorithm described in [EWD
-840](../ewd840). Compared to EWD 840, this algorithm supports
-asynchronous message delivery. However, it still assumes reliable
-message channels and non-faulty nodes. For TLA+ learners, it is best to
-study EWD840 first and then read the TLA+ spec of
-[EWD998.tla](./EWD998.tla).
+detection in a ring as given by Shmuel Safra in [EWD
+998](https://www.cs.utexas.edu/users/EWD/ewd09xx/EWD998.PDF). EWD 998 is
+an extension of a simpler algorithm described in [EWD 840](../ewd840).
+Compared to EWD 840, this algorithm supports asynchronous message
+delivery. However, it still assumes reliable message channels and
+non-faulty nodes. For TLA+ learners, it is best to study EWD840 first
+and then read the TLA+ spec of [EWD998.tla](./EWD998.tla).
 
 For readers familiar with TLA+:
 
@@ -19,7 +23,7 @@ EWD998.tla refines the abstraction
 [AsyncTerminationDetection](./AsyncTerminationDetection.tla) under the
 refinement mapping given in EWD998.tla. This mapping has been
 model-checked with TLC. Additionally, the spec
-[AsyncTerminationDetection\_proof](./AsyncTerminationDetection_proof.tla)
+[AsyncTerminationDetection_proof](./AsyncTerminationDetection_proof.tla)
 proves the main safety properties for module AsyncTerminationDetection,
 and refinement of
 [SyncTerminationDetection.tla](../ewd840/SyncTerminationDetection.tla).
@@ -37,12 +41,12 @@ inboxes. [EWD998ChanID.tla](./EWD998ChanID.tla) refines EWD998Chan.tla
 and replace natural numbers as node identifiers with hostnames
 (arbitrary strings actually). EWD998ChanID.tla also shows how to model
 [vector clocks](https://en.wikipedia.org/wiki/Vector_clock) in TLA+,
-which [EWD998ChanID\_shiviz.tla](./EWD998ChanID_shiviz.tla) exploits to
+which [EWD998ChanID_shiviz.tla](./EWD998ChanID_shiviz.tla) exploits to
 visualize traces with [Shiviz](https://bestchai.bitbucket.io/shiviz/).
-The spec [EWD998ChanID\_export.tla](./EWD998ChanID_export.tla)
+The spec [EWD998ChanID_export.tla](./EWD998ChanID_export.tla)
 demonstrates how to export TLC traces to Json. Below is an animation of
 the termination detection process for six nodes. It was created with
-[EWD998\_anim.tla](./EWD998_anim.tla).
+[EWD998_anim.tla](./EWD998_anim.tla).
 
 ![Termination detection with EWD998 with six processes](./EWD998.gif)
 
@@ -69,13 +73,13 @@ In the case of EWD998, we pretend that we wish to study the efficiency
 of four different variants of the original termination detection
 algorithm:
 
-1)  “pt1”: An *active* node may pass the token if the node is
+1.  “pt1”: An *active* node may pass the token if the node is
     black/tainted.
-2)  “pt2”: An *active* node may pass the token if the token is
+2.  “pt2”: An *active* node may pass the token if the token is
     black/tainted.
-3)  “pt3”: Return the token to the initiator, thus, abort the token
+3.  “pt3”: Return the token to the initiator, thus, abort the token
     round, iff the node is black.
-4)  “pt4”: Return the token to the initiator, thus, abort the token
+4.  “pt4”: Return the token to the initiator, thus, abort the token
     round, iff the token is black.
 
 pt3 and pt4 can be seen as “aborting” an inconclusive token round by
@@ -87,16 +91,16 @@ send a token to the initiator (i.e. not a ring).
 
 The way we are going to measure efficiency is by measuring the number of
 steps between termination of
-[`Environment`](./EWD998ChanID.tla#L116-L157) and the termination
-detection by [`System`](./EWD998ChanID.tla#L64-L112) (see EWD998.tla for
-their definitions).
+[`Environment`](./EWD998ChanID.tla#L116-L157) and the detection of
+termination by [`System`](./EWD998ChanID.tla#L64-L112) (see EWD998.tla
+for their definitions).
 
 ## Simulation
 
-In this section, we are going to outline the TLA+ specs that were
-simulated and discuss the results.
+In this section, we outline the simluation of the TLA+ specs and discuss
+our results.
 
-The spec [EWD99\_opts.tla](./EWD99_opts.tla) extends module EWD998
+The spec [EWD998_opts.tla](./EWD998_opts.tla) extends module EWD998
 (EWD998Chan actually) and, depending on the given “feature flags” `F`,
 enables the variants `pt1` to `pt4` in the sub-action `PassTokenOpts`:
 
@@ -162,13 +166,13 @@ nodes are inactive and no Environment steps are possible.
 
 We then generate a reasonable number of traces for all elements of
 `(SUBSET {pt1,pt2,pt3,pt4}) \X {7,29,43}`. This is done in the TLA+
-“script” [EWD998\_optsSC.tla](./EWD998_optsSC.tla). The average number
-of token passes are plotted in the barplots below.
+“script” [EWD998_optsSC.tla](./EWD998_optsSC.tla). The average number of
+token passes are plotted in the barplots below.
 
 Note that the underlying `R` code can be found in
 [README.Rmd](./README.Rmd), from which this file is generated on a host
-with all libraries installed via the command `Rscript -e
-"rmarkdown::render('README.Rmd')"`.
+with all libraries installed via the command
+`Rscript -e "rmarkdown::render('README.Rmd')"`.
 
 ### Average length of suffix for which `terminated /\ ~terminationDetected` holds
 
@@ -211,11 +215,12 @@ exist. Related, we don’t fully take advantage of studying properties
 above the code/implementation level, because we still let the simulator
 generate behaviors satisfying the original behavior spec that allows
 `Environment` steps. It would be faster to generate behavior by defining
-the set of initial states to be all states in which `terminated /\
-~terminationDetected` holds. Unfortunately, this is infeasible because
-the TLC simulator generates *all* initial states upfront. For increasing
-numbers of nodes, the cardinality of this set becomes astronomical
-(under a suitable state constraint to bound the message counters). The
+the set of initial states to be all states in which
+`terminated /\ ~terminationDetected` holds. Unfortunately, this is
+infeasible because the TLC simulator generates *all* initial states
+upfront. For increasing numbers of nodes, the cardinality of this set
+becomes astronomical (under a suitable state constraint to bound the
+message counters). The
 [Randomization.tla](https://github.com/tlaplus/tlaplus/blob/master/tlatools/org.lamport.tlatools/src/tla2sany/StandardModules/Randomization.tla)
 module, [otherwise used to validate inductive
 invariants](https://lamport.azurewebsites.net/tla/inductive-invariant.pdf),
@@ -255,3 +260,16 @@ termination and termination detection, because they apply to active
 nodes only. More importantly, with pt1 and pt2 active, the enablement of
 sub-action `PassTokenOpts` changes increasing the probability of the
 simulator choosing `PassTokenOpts` to extend the current trace.)
+
+#### README.md is generated from README.Rmd on a host with all libraries installed via:
+
+``` shell
+Rscript -e "rmarkdown::render('README.Rmd')"
+```
+
+### Install required libraries and R packages (on macOS) with:
+
+``` shell
+brew install pandoc r
+Rscript -e "install.packages(c('rmarkdown', 'ggplot2','dplyr', 'here'), repos='http://cran.us.r-project.org')"
+```

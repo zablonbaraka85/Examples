@@ -1,5 +1,5 @@
-------------------------------- MODULE EWD998_opts -------------------------------
-EXTENDS EWD998, TLC, IOUtils, CSV
+------------------------------- MODULE EWD998Chan_opts -------------------------------
+EXTENDS EWD998Chan, TLC, TLCExt, IOUtils, CSV
 
 \* The data collection below only works with TLC running in generation mode.
 \* Unless TLC runs with -Dtlc2.tool.impl.Tool.probabilistic=true (or -generate),
@@ -54,30 +54,35 @@ InitSim ==
     /\ active = [n \in Node |-> TRUE]
     /\ color = [n \in Node |-> "white"]
 
-PassTokenOpts(i) ==
-  /\ token.pos = i
-  /\ \/ ~ active[i] \* If machine i is active, keep the token.
+PassTokenOpts(n) ==
+  /\ n # 0
+  (* Rule 2 *)
+  /\ \/ ~ active[n] \* If machine i is active, keep the token.
      \/ /\ "pt1" \in F
-        /\ color[i] = "black"
+        /\ color[n] = "black"
      \/ /\ "pt2" \in F
-        /\ token.color = "black"
-  /\ token' = [token EXCEPT !.pos = CASE "pt3" \in F /\ color[i] = "black" -> 0
-                                      [] "pt4" \in F /\ token.color = "black" -> 0
-                                      [] OTHER    ->  @ - 1,
-                            !.q = @ + counter[i],
-                            !.color = IF color[i] = "black" THEN "black" ELSE @]
-  /\ color' = [ color EXCEPT ![i] = "white" ]
-  /\ UNCHANGED <<active, counter, pending>>
+        /\ \E j \in 1..Len(inbox[n]) : inbox[n][j].type = "tok" /\ inbox[n][j].color = "black"
+  /\ \E j \in 1..Len(inbox[n]) : 
+          /\ inbox[n][j].type = "tok"
+          \* the machine nr.i+1 transmits the token to machine nr.i under q := q + c[i+1]
+          /\ LET tkn == inbox[n][j]
+             IN  inbox' = [inbox EXCEPT ![CASE "pt3" \in F /\ color[n] = "black" -> 0
+                                            [] "pt4" \in F /\ tkn.color ="black" -> 0
+                                            [] OTHER    ->  n-1] = 
+                                       Append(@, [tkn EXCEPT !.q = tkn.q + counter[n],
+                                                             !.color = IF color[n] = "black"
+                                                                       THEN "black"
+                                                                       ELSE tkn.color]),
+                                    ![n] = RemoveAt(@, j) ] \* pass on the token.
+  (* Rule 7 *)
+  /\ color' = [ color EXCEPT ![n] = "white" ]
+  \* The state of the nodes remains unchanged by token-related actions.
+  /\ UNCHANGED <<active, counter>>                    
 
-SystemOpts ==
-    \/ InitiateProbe
-    \/ \E i \in Node \ {0}: PassTokenOpts(i)
+SystemOpts(n) == \/ InitiateProbe
+                 \/ PassTokenOpts(n)
 
-SpecOpts ==
-    InitSim /\ Init /\ [][SystemOpts \/ Environment]_vars
-
-terminated ==
-    \A n \in Node: ~active[n] /\ pending[n] = 0
+SpecOpts == InitSim /\ Init /\ [][\E n \in Node: SystemOpts(n) \/ Environment]_vars
 
 --------------------------------------------------------------------------------
 
@@ -85,7 +90,7 @@ terminated ==
 ASSUME TLCSet(1, 0)
 
 AtTermination ==
-    IF terminated # terminated'
+    IF EWD998!Termination # EWD998!Termination'
     THEN TLCSet(1, TLCGet("level"))
     ELSE TRUE
 
@@ -95,14 +100,14 @@ AtTerminationDetected ==
     \* is evaluated for *every* generated state, instead of just after the last
     \* state when we actually want the consequent to be evalauted.
     \* A constraint's advantage is that it works with old versions of TLC.
-    terminationDetected =>
+    EWD998!terminationDetected =>
     /\ LET o == TLCGet("stats").behavior.actions
        IN \* Append record to CSV file on disk.
           /\ CSVWrite("%1$s#%2$s#%3$s#%4$s#%5$s#%6$s#%7$s#%8$s#%9$s",
-               << F, N, TLCGet("level"),
+               << F, N, TLCGet("level"), TLCGet("level") - TLCGet(1),
                  o["InitiateProbe"],o["PassTokenOpts"], \* Note "Opts" suffix!
-                 o["SendMsg"],o["RecvMsg"],o["Deactivate"],
-                 TLCGet(1) >>,
+                 o["SendMsg"],o["RecvMsg"],o["Deactivate"]
+                 >>,
                IOEnv.Out)
           \* Reset the counter for the next behavior.
           /\ TLCSet(1, 0)
@@ -113,7 +118,7 @@ Features ==
     CHOOSE s \in SUBSET FeatureFlags : ToString(s) = IOEnv.F
 
 Nodes ==
-    CHOOSE n \in 1..512 : ToString(n) = IOEnv.N
+    CHOOSE n \in 1..256 : ToString(n) = IOEnv.N
 
 ================================================================================
 
