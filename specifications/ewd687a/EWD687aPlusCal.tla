@@ -1,4 +1,4 @@
--------------------------- MODULE DijkstraScholten --------------------------
+-------------------------- MODULE EWD687aPlusCal --------------------------
 (***************************************************************************)
 (* PlusCal representation of the algorithm by Dijkstra and Scholten for    *)
 (* detecting the termination of a distributed computation initiated by a   *)
