@@ -105,3 +105,5 @@ echo Check EWD687a
 $TLC_COMMAND specifications/ewd687a/MCEWD687a
 echo Simulate EWD687a_anim
 $TLC_COMMAND -simulate num=100 -note specifications/ewd687a/EWD687a_anim || (($? == 12))  ## Expect a safety violation
+echo Check Huang
+$TLC_COMMAND specifications/Huang/Huang
