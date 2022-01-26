@@ -101,7 +101,7 @@ Terminated ==
         /\ msgs[p] = <<>>
 
 Safe == 
-    []TerminationDetected => []Terminated
+    [](TerminationDetected => []Terminated)
 
 THEOREM Spec => Safe
                
