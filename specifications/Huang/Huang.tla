@@ -66,6 +66,7 @@ Idle(p) ==
 ----------------------------------------------------------------------------
 
 IdleLdr ==
+    /\ active[Leader]
     /\ active' = [active EXCEPT ![Leader] = FALSE]
     /\ UNCHANGED <<weight, msgs>>
 
