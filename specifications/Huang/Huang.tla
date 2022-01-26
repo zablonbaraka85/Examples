@@ -91,19 +91,22 @@ Spec ==
         /\ \A p \in Procs \ {Leader}: WF_vars(Idle(p))
 
 ----------------------------------------------------------------------------
+TerminationDetected ==
+    /\ ~active[Leader]
+    /\ weight[Leader] = One
 
 Terminated ==
-    \A p \in Procs \ {Leader} :
+    \A p \in Procs : 
         /\ ~active[p] 
         /\ msgs[p] = <<>>
 
 Safe == 
-    (weight[Leader] = One) => Terminated
+    []TerminationDetected => []Terminated
 
-THEOREM Spec => []Safe
+THEOREM Spec => Safe
                
 Live == 
-    Terminated ~> (weight[Leader] = One)
+    Terminated ~> TerminationDetected
 
 THEOREM Spec => Live
 
