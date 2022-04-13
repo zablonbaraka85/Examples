@@ -65,7 +65,7 @@ TypeOK ==
 (***************************************************************************)
 VotedFor(a, b, v) == <<b, v>> \in votes[a]
    (************************************************************************)
-   (* True iff (if and only if) acceptor a has votted for value v in       *)
+   (* True iff (if and only if) acceptor a has voted for value v in        *)
    (* ballot number b.                                                     *)
    (************************************************************************)
 
@@ -86,7 +86,7 @@ chosen == {v \in Value : \E b \in Ballot : ChosenAt(b, v)}
 
 DidNotVoteAt(a, b) == \A v \in Value : ~ VotedFor(a, b, v) 
    (************************************************************************)
-   (* True iff acceptor `a' has not voted in ballot number .               *)
+   (* True iff acceptor `a' has not voted in ballot number.                *)
    (************************************************************************)
 
 CannotVoteAt(a, b) == /\ maxBal[a] > b

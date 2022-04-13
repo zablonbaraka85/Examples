@@ -11,7 +11,7 @@
 (* initially empty, it can be set to a single value, and then it can never *)
 (* change.                                                                 *)
 (*                                                                         *)
-(* We are ignoring liveness, so we do not any requirement that a value is  *)
+(* We are ignoring liveness, so we do not require that a value is          *)
 (* eventually chosen.                                                      *)
 (***************************************************************************)
 
