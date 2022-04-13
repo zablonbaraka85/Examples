@@ -17,30 +17,30 @@ LOCAL GCD(n, m) ==
 
 ------------------------------------------------------------------------------
 
-LOCAL Rationals(num, dem) ==
+LOCAL Rational(num, dem) ==
     [num |-> num, dem |-> dem]
 
 LOCAL Reduce(p) ==
     LET gcd == GCD(p.num, p.dem)
     IN  IF gcd = 1 THEN p
-        ELSE Rationals(p.num \div gcd, p.dem \div gcd)
-
-Zero == Rationals(0,1)
-
-One == Rationals(1,1)
+        ELSE Rational(p.num \div gcd, p.dem \div gcd)
 
 IsDyadicRational(r) ==
     \E i \in 0..r.dem: 2^i = r.dem 
 
+Zero == Rational(0,1)
+
+One == Rational(1,1)
+
 Add(p, q) ==
     IF p = Zero THEN q ELSE
     LET lcn == Max({p.dem, q.dem}) \* shortcut because dyadic!
-        qq == Rationals(q.num * (lcn \div q.dem), q.dem * (lcn \div q.dem))
-        pp == Rationals(p.num * (lcn \div p.dem), p.dem * (lcn \div p.dem))
-    IN Reduce(Rationals(qq.num + pp.num, lcn))
+        qq == Rational(q.num * (lcn \div q.dem), q.dem * (lcn \div q.dem))
+        pp == Rational(p.num * (lcn \div p.dem), p.dem * (lcn \div p.dem))
+    IN Reduce(Rational(qq.num + pp.num, lcn))
 
 Half(p) ==
-    Reduce(Rationals(p.num, p.dem * 2))
+    Reduce(Rational(p.num, p.dem * 2))
 
 PrettyPrint(p) ==
     IF p = Zero THEN "0" ELSE
