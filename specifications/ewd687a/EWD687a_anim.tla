@@ -180,7 +180,7 @@ CONSTANTS L, P1, P2, P3, P4, P5
 \*                     /\ n[1] # n[2]
 \*                     \* L is a source and never a sink.
 \*                     /\ n[2] # L }
-\*     IN RandomElement(Edgs)
+\*     IN TLCEval(RandomElement(Edgs))
 
 \* \* Print the randomly choosen set of edges.
 \* ASSUME PrintT(<<"Edges", Edges>>)
