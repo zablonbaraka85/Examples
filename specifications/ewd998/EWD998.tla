@@ -45,7 +45,7 @@ Init ==
   (* Rule 0 *)
   /\ counter = [i \in Node |-> 0] \* c properly initialized
   /\ pending = [i \in Node |-> 0]
-  /\ token = [pos |-> 0, q |-> 0, color |-> "black"]
+  /\ token \in [ pos: Node, q: {0}, color: {"black"} ]
 
 InitiateProbe ==
   (* Rules 1 + 5 + 6 *)
@@ -63,9 +63,9 @@ PassToken(i) ==
   (* Rules 2 + 4 + 7 *)
   /\ ~ active[i] \* If machine i is active, keep the token.
   /\ token.pos = i
-  /\ token' = [token EXCEPT !.pos = @ - 1,
-                            !.q = @ + counter[i],
-                            !.color = IF color[i] = "black" THEN "black" ELSE @]
+  /\ token' = [pos |-> token.pos - 1,
+               q |-> token.q + counter[i],
+               color |-> IF color[i] = "black" THEN "black" ELSE token.color]
   /\ color' = [ color EXCEPT ![i] = "white" ]
   \* The state of the nodes remains unchanged by token-related actions.
   /\ UNCHANGED <<active, counter, pending>>
