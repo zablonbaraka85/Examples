@@ -5,9 +5,11 @@
 (* Shmuel Safra's version of termination detection.                        *)
 (* https://www.cs.utexas.edu/users/EWD/ewd09xx/EWD998.PDF                  *)
 (***************************************************************************)
-EXTENDS Integers, FiniteSets, Utils
+EXTENDS Integers, FiniteSets, Functions, SequencesExt
 
-CONSTANT N
+CONSTANT
+    \* @type: Int;
+    N
 ASSUME NAssumption == N \in Nat \ {0} \* At least one node.
 
 Node == 0 .. N-1
@@ -15,10 +17,15 @@ Color == {"white", "black"}
 Token == [pos : Node, q : Int, color : Color]
 
 VARIABLES 
+ \* @type: Int -> Bool;
  active,     \* activation status of nodes
+ \* @type: Int -> Str;
  color,      \* color of nodes
+ \* @type: Int -> Int;
  counter,    \* nb of sent messages - nb of rcvd messages per node
+ \* @type: Int -> Int;
  pending,    \* nb of messages in transit to node
+ \* @type: [ pos: Int, q: Int, color: Str ];
  token       \* token structure
   
 vars == <<active, color, counter, pending, token>>
@@ -128,9 +135,14 @@ terminationDetected ==
   /\ pending[0] = 0
 
 (***************************************************************************)
+(* Sum of the values f[x], for x \in S \subseteq DOMAIN f.                 *)
+(***************************************************************************)
+Sum(f, S) == FoldFunctionOnSet(+, 0, f, S)
+
+(***************************************************************************)
 (* The number of messages on their way. "in-flight"                        *)
 (***************************************************************************)
-B == FoldFunction(+, 0, pending)
+B == Sum(pending, Node)
 
 (***************************************************************************)
 (* The system has terminated if no node is active and there are no         *)
@@ -144,22 +156,36 @@ TerminationDetection ==
   terminationDetected => Termination
 
 (***************************************************************************)
+(* Interval of nodes between a and b: this is just a..b, but the following *)
+(* definition helps Apalache to construct a bounded set.                   *)
+(***************************************************************************)
+Rng(a,b) == { i \in Node: a <= i /\ i <= b }
+
+
+(***************************************************************************)
 (* Safra's inductive invariant                                             *)
 (***************************************************************************)
 Inv == 
-  /\ P0:: B = FoldFunction(+, 0, counter)
+  /\ P0:: B = Sum(counter, Node)
      (* (Ai: t < i < N: machine nr.i is passive) /\ *)
      (* (Si: t < i < N: ci.i) = q *)
-  /\ \/ P1:: /\ \A i \in (token.pos+1)..N-1: ~ active[i] \* machine nr.i is passive
+  /\ \/ P1:: /\ \A i \in Rng(token.pos+1, N-1): active[i] = FALSE \* machine nr.i is passive
              /\ IF token.pos = N-1 
                 THEN token.q = 0 
-                ELSE token.q = FoldFunctionOnSet(+, 0, counter, (token.pos+1..N-1))
+                ELSE token.q = Sum(counter, Rng(token.pos+1,N-1))
      (* (Si: 0 <= i <= t: c.i) + q > 0. *)
-     \/ P2:: FoldFunctionOnSet(+, 0, counter, 0..token.pos) + token.q > 0
+     \/ P2:: Sum(counter, Rng(0, token.pos)) + token.q > 0
      (* Ei: 0 <= i <= t : machine nr.i is black. *)
-     \/ P3:: \E i \in 0..token.pos : color[i] = "black"
+     \/ P3:: \E i \in Rng(0, token.pos) : color[i] = "black"
      (* The token is black. *)
      \/ P4:: token.color = "black"
+
+(***************************************************************************)
+(* The inductive invariant combined with the type invariant                *)
+(***************************************************************************)
+TypedInv ==
+    /\ TypeOK
+    /\ Inv
 
 (***************************************************************************)
 (* Liveness property: termination is eventually detected.                  *)

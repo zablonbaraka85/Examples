@@ -4,14 +4,19 @@
 (* ring with asynchronous communication.                                   *)
 (***************************************************************************)
 EXTENDS Naturals
-CONSTANT N
+CONSTANT
+  \* @type: Int; 
+  N
 ASSUME NAssumption == N \in Nat \ {0}
 
 Node == 0 .. N-1
 
 VARIABLES 
+  \* @type: Int -> Bool;
   active,               \* activation status of nodes
+  \* @type: Int -> Int;
   pending,              \* number of messages pending at a node
+  \* @type: Bool;
   terminationDetected   \* has termination been detected?
 
 TypeOK ==
@@ -65,6 +70,10 @@ Spec == /\ Init /\ [][Next]_vars
            \* reasonable but not necessary for detecting termination
            \* /\ \A i \in Node : WF_vars(Wakeup(i))
 
+\* a temporary solution for Apalache, until it translates [][Next]_vars
+NextOrUnchanged ==
+    Next \/ UNCHANGED vars
+
 (***************************************************************************)
 (* Restrict TLC model checking to a finite fragment of the state space.    *)
 (***************************************************************************)
@@ -73,10 +82,40 @@ StateConstraint == \A n \in Node : pending[n] <= 3
 (***************************************************************************)
 (* Correctness properties.                                                 *)
 (***************************************************************************)
-Stable == [](terminationDetected => []terminated)
+Safe == terminationDetected => terminated
+
+Quiescence == [](terminated => []terminated)
 
 Live == terminated ~> terminationDetected
 
+(***************************************************************************)
+(* An inductive invariant to be checked with Apalache.                     *)
+(***************************************************************************)
+IndInv ==
+    /\ TypeOK
+    /\ Safe
+
+\* By proving QuiescenceAsActionInv, we show that Quiescence holds true
+QuiescenceAsActionInv ==
+    terminated => terminated'
+
+\* @typeAlias: STATE =
+\*   [ active: Int -> Bool, pending: Int -> Int, terminationDetected: Bool ];
+\* @type: Seq(STATE) => Bool;
+QuiescenceAsTraceInv(hist) ==
+    LET terminatedAt(i) ==
+        \A n \in Node: ~hist[i].active[n] /\ hist[i].pending[n] = 0
+    IN
+    \A i \in DOMAIN hist:
+        terminatedAt(i) =>
+            \A j \in DOMAIN hist: j >= i => terminatedAt(j)
+
+(***************************************************************************)
+(* Use Apalache to verify Quiescence by checking the action formula        *)
+(* StableActionInvariant for a model with initial-state predicate TypeOK   *)
+(* and next-state relation Next.                                           *)
+(***************************************************************************)
+StableActionInvariant == terminated => terminated'
 =============================================================================
 \* Modification History
 \* Last modified Wed Jun 02 14:21:31 PDT 2021 by markus
