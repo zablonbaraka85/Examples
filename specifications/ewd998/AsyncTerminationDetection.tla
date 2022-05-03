@@ -48,7 +48,7 @@ SendMsg(i,j) ==  \* node i sends a message to node j
   /\ pending' = [pending EXCEPT ![j] = @ + 1]
   /\ UNCHANGED <<active, terminationDetected>>
 
-Wakeup(i) == \* node i receives a pending message
+RcvMsg(i) == \* node i receives a pending message
   /\ pending[i] > 0
   /\ active' = [active EXCEPT ![i] = TRUE]
   /\ pending' = [pending EXCEPT ![i] = @ - 1]
@@ -60,7 +60,7 @@ DetectTermination ==
   /\ UNCHANGED <<active, pending>>
 
 Next ==
-  \/ \E i \in Node : Wakeup(i) \/ Terminate(i)
+  \/ \E i \in Node : RcvMsg(i) \/ Terminate(i)
   \/ \E i,j \in Node : SendMsg(i,j)
   \/ DetectTermination
 
@@ -118,6 +118,6 @@ QuiescenceAsTraceInv(hist) ==
 StableActionInvariant == terminated => terminated'
 =============================================================================
 \* Modification History
+\* Last modified Tue Apr 12 15:04:08 CEST 2022 by merz
 \* Last modified Wed Jun 02 14:21:31 PDT 2021 by markus
-\* Last modified Thu Jan 21 17:38:07 CET 2021 by merz
 \* Created Sun Jan 10 15:19:20 CET 2021 by merz
