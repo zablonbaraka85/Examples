@@ -191,6 +191,34 @@ Variant pt4 has a slightly better worst-case behavior, but it still requires `((
 
 (pt1 and pt2 have no relevance on the number of token passes between termination and termination detection, because they apply to active nodes only. More importantly, with pt1 and pt2 active, the enablement of sub-action `PassTokenOpts` changes increasing the probability of the simulator choosing `PassTokenOpts` to extend the current trace.)
 
+## Randomized State Exploration ("Smoke Testing")
+
+Violations found checking `SmokeInit /\ [Next]_vars /\ WF_vars(System) => []Inv /\ ATDSpec` with randomized state exploration ("simulation") starting from a small, randomly choosen subset of the initial states.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+data <- read.csv(header=TRUE, sep = "#", file = "SmokeEWD998_SC1651624910.csv")
+
+summary <- data %>%
+  group_by(BugFlags) %>%
+  summarize(
+    "None" = length(BugFlags[Violation==0]),
+    "ATDSpec" = length(BugFlags[Violation==13]),
+    "Inv" = length(BugFlags[Violation==12])
+    ,V = length(BugFlags[Violation!=0])
+  )
+
+## https://mgimond.github.io/ES218/Week03b.html
+df <- pivot_longer(summary, cols=2:4, names_to = "Violation", values_to = "Ratio")
+
+ggplot(df, aes(fill=Violation, y=Ratio, x=BugFlags)) + 
+  geom_bar(position="fill", stat="identity") +
+  xlab("BugFlags")
+```
 
 #### README.md is generated from README.Rmd on a host with all libraries installed via:
 ```shell

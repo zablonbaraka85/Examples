@@ -1,12 +1,16 @@
 EWD998
 ================
 Markus A Kuppe
-(2021-11-29)
+(2022-05-03)
 
--   [Statistics](#statistics)
--   [Simulation](#simulation)
--   [Analytical worst-case
-    complexity](#analytical-worst-case-complexity)
+-   <a href="#statistics" id="toc-statistics">Statistics</a>
+-   <a href="#simulation" id="toc-simulation">Simulation</a>
+-   <a href="#analytical-worst-case-complexity"
+    id="toc-analytical-worst-case-complexity">Analytical worst-case
+    complexity</a>
+-   <a href="#randomized-state-exploration-smoke-testing"
+    id="toc-randomized-state-exploration-smoke-testing">Randomized State
+    Exploration (“Smoke Testing”)</a>
 
 The [specification](./EWD998.tla) in this directory models termination
 detection in a ring as given by Shmuel Safra in [EWD
@@ -73,13 +77,13 @@ In the case of EWD998, we pretend that we wish to study the efficiency
 of four different variants of the original termination detection
 algorithm:
 
-1.  “pt1”: An *active* node may pass the token if the node is
+1)  “pt1”: An *active* node may pass the token if the node is
     black/tainted.
-2.  “pt2”: An *active* node may pass the token if the token is
+2)  “pt2”: An *active* node may pass the token if the token is
     black/tainted.
-3.  “pt3”: Return the token to the initiator, thus, abort the token
+3)  “pt3”: Return the token to the initiator, thus, abort the token
     round, iff the node is black.
-4.  “pt4”: Return the token to the initiator, thus, abort the token
+4)  “pt4”: Return the token to the initiator, thus, abort the token
     round, iff the token is black.
 
 pt3 and pt4 can be seen as “aborting” an inconclusive token round by
@@ -260,6 +264,15 @@ termination and termination detection, because they apply to active
 nodes only. More importantly, with pt1 and pt2 active, the enablement of
 sub-action `PassTokenOpts` changes increasing the probability of the
 simulator choosing `PassTokenOpts` to extend the current trace.)
+
+## Randomized State Exploration (“Smoke Testing”)
+
+Violations found checking
+`SmokeInit /\ [Next]_vars /\ WF_vars(System) => []Inv /\ ATDSpec` with
+randomized state exploration (“simulation”) starting from a small,
+randomly choosen subset of the initial states.
+
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 #### README.md is generated from README.Rmd on a host with all libraries installed via:
 
