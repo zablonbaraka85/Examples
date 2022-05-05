@@ -1,4 +1,14 @@
 ---------------------- MODULE AsyncTerminationDetection_proof ---------------------
+(*********************************************************************************)
+(* Proofs about the high-level specification of termination detection.           *)
+(*                                                                               *)
+(* Please note that the liveness proof below requires building tlapm from source *)
+(* using the branch available at                                                 *)
+(* https://github.com/tlaplus/tlapm/tree/updated_enabled_cdot.                   *)
+(* Running the standard distribution of TLAPS on this module will result in an   *)
+(* error message about an unknown proof directive.                               *)
+(*********************************************************************************)
+
 EXTENDS AsyncTerminationDetection, TLAPS
 
 LEMMA TypeCorrect == Spec => []TypeOK
