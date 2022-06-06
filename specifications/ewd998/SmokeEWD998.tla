@@ -16,12 +16,12 @@ SmokeInit ==
        /\ color = [n \in Node |-> "black"]
        /\ counter = [i \in Node |-> 0]
        /\ pending = [i \in Node |-> 0]
-       /\ token = [pos |-> 0, q |-> 0, color |-> (IF 1 \in BugFlags THEN "white" ELSE "black")]
+       /\ token = [pos |-> 0, q |-> 0, color |-> ("black")]
     \/ /\ pending \in RandomSubset(k, [Node -> 0..(N-1)])
        /\ counter \in RandomSubset(k, [Node -> -(N-1)..(N-1)])
        /\ active \in RandomSubset(k, [Node -> BOOLEAN])
        /\ color \in RandomSubset(k, [Node -> Color])
-       /\ token \in RandomSubset(k, [pos: Node, q: Node, color: (IF 1 \in BugFlags THEN {"white"} ELSE {"black"})])
+       /\ token \in RandomSubset(k, [pos: Node, q: Node, color: ({"black"})])
        /\ Inv!P0 \* Reject states with invalid ratio between counter, pending, ...
 
 \* StopAfter  has to be configured as a state constraint. It stops TLC after ~1

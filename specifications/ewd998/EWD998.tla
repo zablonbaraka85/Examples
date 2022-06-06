@@ -5,10 +5,7 @@
 (* Shmuel Safra's version of termination detection.                        *)
 (* https://www.cs.utexas.edu/users/EWD/ewd09xx/EWD998.PDF                  *)
 (***************************************************************************)
-EXTENDS Integers, FiniteSets, Functions, SequencesExt
-
-BugFlags == 
-    {}
+EXTENDS Integers, FiniteSets, Functions, SequencesExt, Randomization
 
 CONSTANT
     \* @type: Int;
@@ -48,8 +45,7 @@ Init ==
   (* Rule 0 *)
   /\ counter = [i \in Node |-> 0] \* c properly initialized
   /\ pending = [i \in Node |-> 0]
-  /\ token \in [ pos: Node, q: {0}, color: {"black"} ]
-\*  /\ token = [pos |-> 0, q |-> 0, color |-> (IF 1 \in BugFlags THEN "white" ELSE "black")]
+  /\ token \in [ pos: {0}, q: {0}, color: {"black"} ]
 
 InitiateProbe ==
   (* Rules 1 + 5 + 6 *)
@@ -57,9 +53,7 @@ InitiateProbe ==
   /\ \* previous round not conclusive if:
      \/ token.color = "black"
      \/ color[0] = "black"
-\*     \/ IF 2 \in BugFlags THEN FALSE ELSE color[0] = "black"
      \/ counter[0] + token.q > 0
-\*     \/ IF 5 \in BugFlags THEN token.q > 0 ELSE counter[0] + token.q > 0
   /\ token' = [pos |-> N-1, q |-> 0, color |-> "white"]
   /\ color' = [ color EXCEPT ![0] = "white" ]
   \* The state of the nodes remains unchanged by token-related actions.
@@ -68,14 +62,12 @@ InitiateProbe ==
 PassToken(i) ==
   (* Rules 2 + 4 + 7 *)
   /\ ~ active[i] \* If machine i is active, keep the token.
-\*  /\ IF 4 \in BugFlags THEN TRUE ELSE ~ active[i]
   /\ token.pos = i
   /\ token' = [pos |-> token.pos - 1,
                q |-> token.q + counter[i],
                color |-> IF color[i] = "black" THEN "black" ELSE token.color]
-\*               color |-> IF 3 \in BugFlags THEN color[i] ELSE IF color[i] = "black" THEN "black" ELSE token.color ]
+            \*    color |-> color[i] ]
   /\ color' = [ color EXCEPT ![i] = "white" ]
-\*   /\ color' = IF 6 \in BugFlags THEN color ELSE [ color EXCEPT ![i] = "white" ]
   \* The state of the nodes remains unchanged by token-related actions.
   /\ UNCHANGED <<active, counter, pending>>
 

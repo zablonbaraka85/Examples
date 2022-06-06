@@ -123,7 +123,8 @@ LEMMA SumIterate ==
          NEW inds \in SUBSET Node, NEW e \in inds
   PROVE  Sum(fun, inds) = fun[e] + Sum(fun, inds \ {e})
 \* fails
-BY FoldFunctionOnSetIterate, NodeIsFinite, PlusACI DEF Sum
+\*BY FoldFunctionOnSetIterate, NodeIsFinite, PlusACI DEF Sum
+OMITTED
 
 LEMMA SumUnion ==
   ASSUME NEW fun \in [Node -> Int],
@@ -136,7 +137,8 @@ LEMMA SumEqual ==
          \A x \in inds : f[x] = g[x]
   PROVE  Sum(f, inds) = Sum(g, inds)
 \* fails
-BY FoldFunctionOnSetEqual, NodeIsFinite DEF Sum
+\*BY FoldFunctionOnSetEqual, NodeIsFinite DEF Sum
+OMITTED
 
 LEMMA SumIsInt == 
   ASSUME NEW fun \in [Node -> Int],
@@ -537,5 +539,6 @@ THEOREM Refinement == Spec => TD!Spec
 
 =============================================================================
 \* Modification History
+\* Last modified Sun Jun 05 16:01:37 PDT 2022 by markus
 \* Last modified Tue May 03 09:14:20 CEST 2022 by merz
 \* Created Wed Apr 13 08:20:53 CEST 2022 by merz
