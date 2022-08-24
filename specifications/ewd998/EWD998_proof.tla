@@ -9,7 +9,7 @@ USE NAssumption
 (***************************************************************************)
 (* Type correctness.                                                       *)
 (***************************************************************************)
-THEOREM TypeCorrect == Spec => []TypeOK
+THEOREM TypeCorrect == Init /\ [][Next]_vars => []TypeOK
 <1>. USE DEF TypeOK, Node, Color, Token
 <1>1. Init => TypeOK
   BY DEF Init
@@ -40,7 +40,7 @@ THEOREM TypeCorrect == Spec => []TypeOK
     BY <2>6 DEF vars
   <2>7. QED
     BY <2>1, <2>2, <2>3, <2>4, <2>5, <2>6 DEF Environment, Next, System
-<1>. QED  BY <1>1, <1>2, PTL DEF Spec
+<1>. QED  BY <1>1, <1>2, PTL
 
 (***************************************************************************)
 (* Lemmas about FoldFunction that should go to a library.                  *)
@@ -122,9 +122,12 @@ LEMMA SumIterate ==
   ASSUME NEW fun \in [Node -> Int], 
          NEW inds \in SUBSET Node, NEW e \in inds
   PROVE  Sum(fun, inds) = fun[e] + Sum(fun, inds \ {e})
-\* fails
-\*BY FoldFunctionOnSetIterate, NodeIsFinite, PlusACI DEF Sum
-OMITTED
+\* BY FoldFunctionOnSetIterate, NodeIsFinite, PlusACI DEF Sum (* fails *)
+
+LEMMA SumSingleton ==
+  ASSUME NEW fun \in [Node -> Int], NEW x \in Node
+  PROVE  Sum(fun, {x}) = fun[x]
+BY SumIterate, SumEmpty, Isa
 
 LEMMA SumUnion ==
   ASSUME NEW fun \in [Node -> Int],
@@ -136,9 +139,7 @@ LEMMA SumEqual ==
          NEW inds \in SUBSET Node,
          \A x \in inds : f[x] = g[x]
   PROVE  Sum(f, inds) = Sum(g, inds)
-\* fails
-\*BY FoldFunctionOnSetEqual, NodeIsFinite DEF Sum
-OMITTED
+\* BY FoldFunctionOnSetEqual, NodeIsFinite DEF Sum (* fails *)
 
 LEMMA SumIsInt == 
   ASSUME NEW fun \in [Node -> Int],
@@ -152,11 +153,27 @@ LEMMA SumIsNat ==
   PROVE  Sum(fun, inds) \in Nat
 BY FoldFunctionOnSetType, NodeIsFinite, Isa DEF Sum
 
+LEMMA SumZero ==
+  ASSUME NEW fun \in [Node -> Int], NEW inds \in SUBSET Node,
+         \A i \in inds : fun[i] = 0
+  PROVE  Sum(fun, inds) = 0
+<1>1. IsFiniteSet(inds)
+  BY NodeIsFinite, FS_Subset
+<1>. DEFINE P(T) == T \subseteq inds => Sum(fun, T) = 0
+<1>2. P({})
+  BY SumEmpty
+<1>3. ASSUME NEW T, NEW x, IsFiniteSet(T), P(T), x \notin T
+      PROVE  P(T \cup {x})
+  BY <1>3, SumIterate
+<1>4. P(inds)
+  <2>. HIDE DEF P
+  <2>. QED  BY <1>1, <1>2, <1>3, FS_Induction, IsaM("blast")
+<1>. QED  BY <1>4
 
 (***************************************************************************)
 (* Proof of the inductive invariant.                                       *)
 (***************************************************************************)
-THEOREM Invariance == Spec => []Inv
+THEOREM Invariance == Init /\ [][Next]_vars => []Inv
 <1>1. Init => Inv
   BY DEF Init, B, Rng, Inv
 <1>2. TypeOK /\ TypeOK' /\ Inv /\ [Next]_vars => Inv'
@@ -166,7 +183,13 @@ THEOREM Invariance == Spec => []Inv
                PROVE  Inv'
     OBVIOUS
   <2>1. CASE InitiateProbe
-    BY <2>1 DEF InitiateProbe, Inv, B, Rng, Node
+    <3>1. B' = Sum(counter', Node)
+      BY <2>1 DEF InitiateProbe, Inv, B
+    <3>2. Rng(token.pos+1, N-1)' = {}
+      BY <2>1 DEF InitiateProbe, Node, Rng
+    <3>3. Inv!P1'
+      BY <2>1, <3>2, SumEmpty DEF InitiateProbe
+    <3>. QED  BY <3>1, <3>3 DEF Inv
   <2>2. ASSUME NEW i \in Node \ {0},
                PassToken(i)
         PROVE  Inv'
@@ -345,7 +368,7 @@ THEOREM Invariance == Spec => []Inv
             <7>. QED  BY <2>4, SumIsNat DEF RecvMsg, TypeOK
           <6>2. CASE token.pos = N-1
             <7>1. token.q = 0
-              BY <5>1, <6>2
+              BY <5>1, <6>2, SumEmpty DEF TypeOK, Token, Node, Rng
             <7>2. Sum(counter, Rng(0, token.pos)) = B
               <8>. Rng(0, token.pos) = Node
                 BY <6>2 DEF Rng, Node
@@ -385,7 +408,7 @@ THEOREM Invariance == Spec => []Inv
     BY <2>6 DEF vars, Inv, B
   <2>7. QED
     BY <2>1, <2>2, <2>3, <2>4, <2>5, <2>6 DEF Environment, Next, System
-<1>. QED  BY <1>1, <1>2, TypeCorrect, PTL DEF Spec
+<1>. QED  BY <1>1, <1>2, TypeCorrect, PTL
 
 (***************************************************************************)
 (* In particular, the invariant explains why the algorithm is safe.        *)
@@ -418,7 +441,9 @@ THEOREM Safety ==
           BY <4>1 DEF terminationDetected
         <5>2. Sum(counter, Rng(1, N-1)) = 0
           BY <5>1, SumEmpty DEF Rng, Node
-        <5>. QED  BY <2>1, <4>1, <5>2
+        <5>3. Rng(token.pos+1, N-1) = {}
+          BY <4>1, NAssumption DEF TypeOK, Token, Rng, Node
+        <5>. QED  BY <2>1, <4>1, <5>2, <5>3, SumEmpty
       <4>2. CASE token.pos # N-1
         BY <2>1, <4>2 DEF terminationDetected
       <4>. QED  BY <4>1, <4>2 
@@ -431,14 +456,14 @@ THEOREM Safety ==
 <1>. QED  BY <1>1, <1>2
 
 (***************************************************************************)
-(* A useful lemma for the refinement proof.                                *)
+(* A useful lemma for the liveness and refinement proofs.                  *)
 (***************************************************************************)
 LEMMA B0NoMessagePending == 
   /\ TypeOK /\ B=0 => \A i \in Node : pending[i] = 0
   /\ TypeOK' /\ B'=0 => \A i \in Node : pending'[i] = 0
 <1>1. TypeOK /\ B=0 => \A i \in Node : pending[i] = 0
   <2>. SUFFICES ASSUME TypeOK, B = 0, NEW i \in Node, pending[i] # 0
-              PROVE  FALSE
+                PROVE  FALSE
     OBVIOUS
   <2>. B = pending[i] + Sum(pending, Node \ {i})
     BY SumIterate DEF TypeOK, B
@@ -447,8 +472,285 @@ LEMMA B0NoMessagePending ==
   BY <1>1, PTL
 <1>. QED  BY <1>1, <1>2
 
+-----------------------------------------------------------------------------
+(***************************************************************************)
+(* Proofs of liveness.                                                     *)
+(***************************************************************************)
+
+(***************************************************************************)
+(* We first establish the enabledness condition for the System action.     *)
+(* We exclude a special case that we are not interested in. In fact, it    *)
+(* would be reasonable to assume N>1.                                      *)
+(***************************************************************************)
+LEMMA EnabledSystem ==
+  ASSUME TypeOK, N > 1 \/ counter[0]=0
+  PROVE  ENABLED <<System>>_vars
+         <=> \/ /\ token.pos = 0 
+                /\ token.color = "black" \/ color[0] = "black" \/ counter[0]+token.q > 0
+             \/ \E i \in Node \ {0} : ~ active[i] /\ token.pos = i
+<1>1. <<System>>_vars <=> System
+  <2>1. InitiateProbe => <<InitiateProbe>>_vars
+    BY DEF InitiateProbe, TypeOK, Token, vars, Node
+  <2>2. \A i \in Node \ {0} : PassToken(i) => <<PassToken(i)>>_vars
+    BY DEF PassToken, TypeOK, Token, vars, Node
+  <2>. QED  BY <2>1, <2>2 DEF System
+<1>2. (ENABLED <<System>>_vars) <=> (ENABLED System)
+  BY <1>1, ENABLEDrules
+<1>3. ENABLED UNCHANGED <<active, counter, pending>> 
+  BY ExpandENABLED
+<1>. QED  BY <1>2, <1>3, ENABLEDrewrites DEF System, InitiateProbe, PassToken
+
+(***************************************************************************)
+(* In particular, a system transition is enabled when the token is at the  *)
+(* master node and termination has not been detected.                      *)
+(***************************************************************************)
+COROLLARY EnabledAtMaster ==
+  ASSUME TypeOK, Inv, Termination, token.pos = 0, ~ terminationDetected
+  PROVE  ENABLED <<System>>_vars
+<1>. USE DEF Termination, TypeOK, B, Node, Token
+<1>1. N=1 => counter[0] = 0
+  BY SumSingleton, N=1 => 0 .. N-1 = {0}, Isa DEF Inv
+<1>2. /\ token.pos = 0 
+      /\ token.color = "black" \/ color[0] = "black" \/ counter[0]+token.q > 0
+  <2>1. CASE Inv!P1
+    <3>1. Sum(counter, Node) = counter[0] + Sum(counter, Rng(token.pos+1, N-1))
+      BY SumIterate DEF Rng
+    <3>2. counter[0] + token.q = 0
+      BY <2>1, <3>1 DEF Inv
+    <3>. QED  BY <3>2, B0NoMessagePending DEF terminationDetected, Color
+  <2>2. CASE Inv!P2
+    BY <2>2, SumSingleton DEF Rng
+  <2>3. CASE Inv!P3
+    BY <2>3 DEF Rng
+  <2>4. CASE Inv!P4
+    BY <2>4
+  <2>. QED  BY <2>1, <2>2, <2>3, <2>4, Zenon DEF Inv
+<1>. QED  BY <1>1, <1>2, EnabledSystem
+
+
+(***************************************************************************)
+(* Assuming the system has terminated, termination detection may require   *)
+(* up to three rounds of the token:                                        *)
+(* 1. The first round simply brings the token back to the master node.     *)
+(* 2. The second round brings the token back to the master, with all nodes *)
+(*    being colored white.                                                 *)
+(* 3. The third round verifies that all nodes are white and brings back a  *)
+(*    white token to the master node. Moreover, the counter held by the    *)
+(*    token corresponds to the sum of the non-master nodes.                *)
+(* At the end of the third round, the invariant ensures that the master    *)
+(* node detects termination.                                               *)
+(* The proof becomes a little simpler if we assume, aiming for a           *)
+(* contradiction, that termination is never detected. This motivates the   *)
+(* definition of the following operator BSpec.                             *)
+(***************************************************************************)
+BSpec ==
+  /\ []TypeOK
+  /\ []Inv
+  /\ [][Next]_vars
+  /\ []~terminationDetected
+  /\ WF_vars(System)
+
+atMaster == token.pos = 0
+tknWhite == token.color = "white"
+tknCount == token.q = Sum(counter, Rng(1,N-1))
+allWhite == \A i \in Node : color[i] = "white"
+
+LEMMA Round1 == BSpec => (Termination
+                            ~> Termination /\ atMaster)
+<1>. DEFINE P(n) == Termination /\ n \in Node /\ token.pos = n
+            Q == P(0)
+            R(n) == BSpec => [](P(n) => <>Q)
+<1>1. \A n \in Nat : R(n)
+  <2>1. R(0)
+    BY PTL
+  <2>2. ASSUME NEW n \in Nat
+        PROVE  R(n) => R(n+1)
+    <3>. DEFINE Pn == P(n)  Pn1 == P(n+1)
+    <3>. USE DEF TypeOK, Termination, Node, Token, B
+    <3>1. TypeOK /\ Pn1 /\ [Next]_vars => Pn1' \/ Pn'
+      BY B0NoMessagePending 
+         DEF Next, vars, System, Environment, InitiateProbe, PassToken, Deactivate, SendMsg, RecvMsg
+    <3>2. TypeOK /\ Pn1 /\ <<System>>_vars => Pn'
+      BY DEF System, InitiateProbe, PassToken, vars
+    <3>3. TypeOK /\ Pn1 => ENABLED <<System>>_vars
+      BY EnabledSystem
+    <3>. HIDE DEF Pn1
+    <3>4. R(n) => (BSpec => [](Pn1 => <>Q))
+      BY <3>1, <3>2, <3>3, PTL DEF BSpec
+    <3>. QED  BY <3>4 DEF Pn1
+  <2>. HIDE DEF R
+  <2>. QED  BY <2>1, <2>2, NatInduction, Isa
+<1>2. BSpec => []((\E n \in Nat : P(n)) => <>Q)
+  <2>. HIDE DEF P, Q
+  <2>1. BSpec => [](\A n \in Nat : P(n) => <>Q)
+    BY <1>1
+  <2>2. (\A n \in Nat : P(n) => <>Q) <=> ((\E n \in Nat : P(n)) => <>Q)
+    OBVIOUS
+  <2>. QED  BY <2>1, <2>2, PTL
+<1>3. TypeOK => (Termination => \E n \in Nat : P(n))
+  BY DEF Termination, TypeOK, Node, Token
+<1>. QED  BY <1>2, <1>3, PTL DEF BSpec, atMaster
+
+
+LEMMA Round2 == BSpec => (Termination /\ atMaster
+                            ~> Termination /\ atMaster /\ allWhite)
+<1>. DEFINE P(n) == /\ Termination /\ n \in Node /\ token.pos = n
+                    /\ color[0] = "white"
+                    /\ \A i \in n+1 .. N-1 : color[i] = "white"
+            Q == P(0)
+            R(n) == BSpec => [](P(n) => <>Q)
+<1>1. BSpec => (Termination /\ atMaster ~> \E n \in Nat : P(n))
+  <2>. DEFINE S == Termination /\ atMaster
+              T == P(N-1)
+  <2>. USE DEF TypeOK, Termination, Node, Token, B, atMaster
+  <2>1. TypeOK /\ S /\ [Next]_vars => S' \/ T'
+    BY B0NoMessagePending 
+       DEF Next, vars, System, Environment, InitiateProbe, PassToken, Deactivate, SendMsg, RecvMsg
+  <2>2. TypeOK /\ S /\ <<System>>_vars => T'
+    BY DEF System, InitiateProbe, PassToken, vars
+  <2>3. TypeOK /\ Inv /\ ~terminationDetected /\ S => ENABLED <<System>>_vars
+    BY EnabledAtMaster
+  <2>4. T => \E n \in Nat : P(n)
+    OBVIOUS
+  <2>. HIDE DEF T
+  <2>5. QED  BY <2>1, <2>2, <2>3, <2>4, PTL DEF BSpec
+<1>2. \A n \in Nat : R(n)
+  <2>1. R(0)
+    BY PTL
+  <2>2. ASSUME NEW n \in Nat
+        PROVE  R(n) => R(n+1)
+    <3>. DEFINE Pn == P(n)  Pn1 == P(n+1)
+    <3>. USE DEF TypeOK, Termination, Node, Token, B
+    <3>1. TypeOK /\ Pn1 /\ [Next]_vars => Pn1' \/ Pn'
+      BY B0NoMessagePending 
+         DEF Next, vars, System, Environment, InitiateProbe, PassToken, Deactivate, SendMsg, RecvMsg
+    <3>2. TypeOK /\ Pn1 /\ <<System>>_vars => Pn'
+      BY DEF System, InitiateProbe, PassToken, vars
+    <3>3. TypeOK /\ Pn1 => ENABLED <<System>>_vars
+      BY EnabledSystem
+    <3>. HIDE DEF Pn1
+    <3>4. R(n) => (BSpec => [](Pn1 => <>Q))
+      BY <3>1, <3>2, <3>3, PTL DEF BSpec
+    <3>. QED  BY <3>4 DEF Pn1
+  <2>. HIDE DEF R
+  <2>. QED  BY <2>1, <2>2, NatInduction, Isa
+<1>3. BSpec => []((\E n \in Nat : P(n)) => <>Q)
+  <2>. HIDE DEF P, Q
+  <2>1. BSpec => [](\A n \in Nat : P(n) => <>Q)
+    BY <1>2
+  <2>2. (\A n \in Nat : P(n) => <>Q) <=> ((\E n \in Nat : P(n)) => <>Q)
+    OBVIOUS
+  <2>. QED  BY <2>1, <2>2, PTL
+<1>4. Q => Termination /\ atMaster /\ allWhite
+  BY DEF atMaster, allWhite, Node
+<1>. QED  BY <1>1, <1>3, <1>4, PTL
+
+LEMMA Round3 == BSpec => (Termination /\ atMaster /\ allWhite
+                            ~> Termination /\ atMaster /\ allWhite /\ tknWhite /\ tknCount)
+<1>. DEFINE P(n) == /\ Termination /\ n \in Node /\ token.pos = n
+                    /\ allWhite /\ tknWhite
+                    /\ token.q = Sum(counter, Rng(n+1, N-1))
+            Q == P(0)
+            R(n) == BSpec => [](P(n) => <>Q)
+<1>1. BSpec => (Termination /\ atMaster /\ allWhite ~> \E n \in Nat : P(n))
+  <2>. DEFINE S == Termination /\ atMaster /\ allWhite
+              T == P(N-1)
+  <2>. USE DEF TypeOK, Termination, Node, Token, B, atMaster, allWhite, tknWhite
+  <2>0. TypeOK /\ S /\ System => T'
+    <3> SUFFICES ASSUME TypeOK, S, System
+                 PROVE  T'
+      OBVIOUS
+    <3>1. CASE InitiateProbe
+      <4>. Rng(N, N-1) = {}
+        BY DEF Rng
+      <4>. QED  BY <3>1, SumEmpty DEF InitiateProbe
+    <3>2. ASSUME NEW i \in Node \ {0},
+                 PassToken(i)
+          PROVE  T'
+      BY <3>2 DEF PassToken
+    <3>3. QED
+      BY <3>1, <3>2 DEF System
+  <2>1. TypeOK /\ S /\ [Next]_vars => S' \/ T'
+    BY <2>0, B0NoMessagePending 
+       DEF Next, vars, Environment, Deactivate, SendMsg, RecvMsg
+  <2>3. TypeOK /\ Inv /\ ~terminationDetected /\ S => ENABLED <<System>>_vars
+    BY EnabledAtMaster
+  <2>4. T => \E n \in Nat : P(n)
+    OBVIOUS
+  <2>. HIDE DEF T
+  <2>5. QED  BY <2>0, <2>1, <2>3, <2>4, PTL DEF BSpec
+<1>2. \A n \in Nat : R(n)
+  <2>1. R(0)
+    BY PTL
+  <2>2. ASSUME NEW n \in Nat
+        PROVE  R(n) => R(n+1)
+    <3>. DEFINE Pn == P(n)  Pn1 == P(n+1)
+    <3>. USE DEF TypeOK, Termination, Node, Token, B, allWhite, tknWhite
+    <3>0. TypeOK /\ Pn1 /\ System => Pn'
+      <4>1. ASSUME TypeOK, Pn1, InitiateProbe
+            PROVE  Pn'
+        BY <4>1, SumEmpty DEF InitiateProbe, Rng
+      <4>2. ASSUME TypeOK, Pn1, NEW i \in Node \ {0}, PassToken(i)
+            PROVE  Pn'
+        <5>. Sum(counter, Rng(i, N-1)) = counter[i] + Sum(counter, Rng(i+1, N-1))
+          BY <4>2, SumIterate DEF Rng
+        <5>. QED  BY <4>2 DEF PassToken
+      <4>. QED  BY <4>1, <4>2 DEF System
+    <3>1. TypeOK /\ Pn1 /\ [Next]_vars => Pn1' \/ Pn'
+      BY <3>0, B0NoMessagePending DEF Next, vars, Environment, SendMsg, RecvMsg, Deactivate
+    <3>3. TypeOK /\ Pn1 => ENABLED <<System>>_vars
+      BY EnabledSystem
+    <3>. HIDE DEF Pn1
+    <3>4. R(n) => (BSpec => [](Pn1 => <>Q))
+      BY <3>0, <3>1, <3>3, PTL DEF BSpec
+    <3>. QED  BY <3>4 DEF Pn1
+  <2>. HIDE DEF R
+  <2>. QED  BY <2>1, <2>2, NatInduction, Isa
+<1>3. BSpec => []((\E n \in Nat : P(n)) => <>Q)
+  <2>. HIDE DEF P, Q
+  <2>1. BSpec => [](\A n \in Nat : P(n) => <>Q)
+    BY <1>2
+  <2>2. (\A n \in Nat : P(n) => <>Q) <=> ((\E n \in Nat : P(n)) => <>Q)
+    OBVIOUS
+  <2>. QED  BY <2>1, <2>2, PTL
+<1>4. Q => Termination /\ atMaster /\ allWhite /\ tknWhite /\ tknCount
+  BY DEF atMaster, allWhite, tknCount, Node
+<1>. QED  BY <1>1, <1>3, <1>4, PTL
+
+
+LEMMA Detection == 
+  TypeOK /\ Inv /\ Termination /\ atMaster /\ allWhite /\ tknWhite /\ tknCount
+    => terminationDetected
+<1>. SUFFICES ASSUME TypeOK, Inv, Termination, atMaster, allWhite, tknWhite, tknCount
+              PROVE  terminationDetected
+  OBVIOUS
+<1>1. /\ token.pos = 0
+      /\ token.color = "white"
+      /\ color[0] = "white"
+      /\ ~ active[0]
+      /\ pending[0] = 0
+  BY B0NoMessagePending DEF Termination, atMaster, allWhite, tknWhite, Node
+<1>2. token.q + counter[0] = 0
+  <2>1. Sum(counter, Node) = counter[0] + Sum(counter, Rng(1,N-1))
+    BY SumIterate DEF Node, TypeOK, Rng
+  <2>2. Sum(counter, Node) = token.q + counter[0]
+    BY <2>1 DEF tknCount, TypeOK, Token, Node
+  <2>3. Sum(counter, Node) = 0
+    BY DEF Termination, Inv
+  <2>. QED  BY <2>2, <2>3
+<1>. QED  BY <1>1, <1>2 DEF terminationDetected
+
+THEOREM Live == []TypeOK /\ []Inv /\ [][Next]_vars /\ WF_vars(System) => Liveness
+BY Round1, Round2, Round3, Detection, PTL DEF BSpec, Liveness
+
+COROLLARY SpecLive == Spec => Liveness
+BY TypeCorrect, Invariance, Live, PTL DEF Spec
+
+-----------------------------------------------------------------------------
 (***************************************************************************)
 (* Refinement proof.                                                       *)
+(* In order to reuse lemmas about the high-level specification, we         *)
+(* instantiate the corresponding proof module.                             *)
 (***************************************************************************)
 LEMMA NodeIsNode == TD!Node = Node
 BY DEF Node, TD!Node
@@ -526,19 +828,36 @@ THEOREM Refinement == Spec => TD!Spec
     <3>2. CASE terminationDetected' = FALSE
       BY <2>5, <3>1, <3>2, Zenon DEF Deactivate, TD!Terminate, TD!Next
     <3>3. CASE terminationDetected' = TRUE
-      BY <2>5, <3>2, <3>3, Safety, B0NoMessagePending, Zenon 
-         DEF Deactivate, Termination, TD!terminated, TD!Terminate, TD!Next
+      BY <2>5, <3>3, Safety, B0NoMessagePending, Zenon
+         DEF Deactivate, Termination, TD!terminated, TD!Terminate, TD!Next, TypeOK
     <3>. QED  BY <3>2, <3>3 DEF terminationDetected
   <2>6. CASE UNCHANGED vars
     BY <2>6 DEF vars, terminationDetected, TD!vars
   <2>7. QED
     BY <2>1, <2>2, <2>3, <2>4, <2>5, <2>6 DEF Environment, Next, System
-<1>3. []TypeOK /\ []Inv /\ [][Next]_vars /\ WF_vars(System) => WF_(TD!vars)(TD!DetectTermination)
-<1>. QED  BY <1>1, <1>2, <1>3, TypeCorrect, Invariance, PTL DEF Spec, TD!Spec
+<1>4. []TypeOK /\ []Inv /\ [][Next]_vars /\ WF_vars(System) 
+         => WF_(TD!vars)(TD!DetectTermination)
+  <2>1. SUFFICES /\ []TypeOK /\ []Inv /\ [][Next]_vars /\ WF_vars(System)
+                 /\ []ENABLED <<TD!DetectTermination>>_(TD!vars)
+                 => FALSE
+    BY PTL
+  <2>2. TypeOK /\ ENABLED <<TD!DetectTermination>>_(TD!vars) 
+           => Termination /\ ~ terminationDetected
+    <3>. SUFFICES ASSUME TypeOK, ENABLED <<TD!DetectTermination>>_(TD!vars)
+                  PROVE  Termination /\ ~ terminationDetected
+      OBVIOUS
+    <3>1. TD!terminated /\ ~ terminationDetected
+      BY ExpandENABLED DEF TD!DetectTermination, TD!vars, terminationDetected
+    <3>2. \A n \in Node : ~ active[n] /\ pending[n] = 0
+      BY <3>1 DEF TD!terminated
+    <3>3. B = 0
+      BY <3>2, SumZero DEF TypeOK, B
+    <3>. QED  BY <3>1, <3>2, <3>3 DEF Termination
+  <2>. QED  BY <2>2, Live, TypeCorrect, Invariance, PTL DEF Liveness
+<1>. QED  BY <1>1, <1>2, <1>4, TypeCorrect, Invariance, PTL DEF Spec, TD!Spec
 
 
 =============================================================================
 \* Modification History
-\* Last modified Sun Jun 05 16:01:37 PDT 2022 by markus
-\* Last modified Tue May 03 09:14:20 CEST 2022 by merz
+\* Last modified Fri Jul 01 09:08:35 CEST 2022 by merz
 \* Created Wed Apr 13 08:20:53 CEST 2022 by merz

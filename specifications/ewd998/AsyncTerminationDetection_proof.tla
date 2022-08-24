@@ -11,7 +11,7 @@
 
 EXTENDS AsyncTerminationDetection, TLAPS
 
-LEMMA TypeCorrect == Spec => []TypeOK
+LEMMA TypeCorrect == Init /\ [][Next]_vars => []TypeOK
 <1>. USE NAssumption DEF Node, TypeOK
 <1>1. Init => TypeOK
   BY Isa DEF Init, terminated
@@ -41,12 +41,12 @@ LEMMA TypeCorrect == Spec => []TypeOK
    BY <2>5 DEF vars
  <2>6. QED
    BY <2>1, <2>2, <2>3, <2>4, <2>5 DEF Next
-<1>. QED BY <1>1, <1>2, PTL DEF Spec
+<1>. QED BY <1>1, <1>2, PTL
 
 (***************************************************************************)
 (* Proofs of safety and stability.                                         *)
 (***************************************************************************)
-THEOREM Safety == Spec => []Safe
+THEOREM Safety == Init /\ [][Next]_vars => []Safe
 <1>. USE DEF terminated, TypeOK, Safe
 <1>1. Init => Safe
   BY Zenon DEF Init
@@ -70,12 +70,12 @@ THEOREM Safety == Spec => []Safe
   <2>. QED
     BY <2>1, <2>2, <2>3, <2>4, <2>5 DEF Next
 <1>. QED
-  BY <1>1, <1>2, TypeCorrect, PTL DEF Spec
+  BY <1>1, <1>2, TypeCorrect, PTL
 
-THEOREM Stability == Spec => Quiescence
+THEOREM Stability == Init /\ [][Next]_vars => Quiescence
 <1>1. TypeOK /\ terminated /\ [Next]_vars => terminated'
     BY Isa DEF TypeOK, terminated, Next, DetectTermination, Terminate, RcvMsg, SendMsg, vars
-<1>. QED  BY <1>1, TypeCorrect, PTL DEF Spec, Quiescence
+<1>. QED  BY <1>1, TypeCorrect, PTL DEF Quiescence
 
 (***************************************************************************)
 (* Proofs of liveness.                                                     *)
@@ -118,6 +118,6 @@ THEOREM Liveness == Spec => Live
 
 =============================================================================
 \* Modification History
-\* Last modified Mon Apr 11 18:52:29 CEST 2022 by merz
+\* Last modified Wed Jun 29 09:28:02 CEST 2022 by merz
 \* Last modified Wed Jun 02 14:19:14 PDT 2021 by markus
 \* Created Sun Jan 10 15:19:20 CET 2021 by merz
