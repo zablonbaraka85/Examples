@@ -98,11 +98,10 @@ AtTerminationDetected ==
     terminationDetected =>
     /\ LET o == TLCGet("stats").behavior.actions
        IN \* Append record to CSV file on disk.
-          /\ CSVWrite("%1$s#%2$s#%3$s#%4$s#%5$s#%6$s#%7$s#%8$s#%9$s",
-               << F, N, TLCGet("level"),
+          /\ CSVWrite("%1$s#%2$s#%3$s#%4$s#%5$s#%6$s#%7$s#%8$s#%9$s#%10$s",
+               << F, N, TLCGet("level"), TLCGet(1), TLCGet("level") - TLCGet(1), 
                  o["InitiateProbe"],o["PassTokenOpts"], \* Note "Opts" suffix!
-                 o["SendMsg"],o["RecvMsg"],o["Deactivate"],
-                 TLCGet(1) >>,
+                 o["SendMsg"],o["RecvMsg"],o["Deactivate"] >>,
                IOEnv.Out)
           \* Reset the counter for the next behavior.
           /\ TLCSet(1, 0)

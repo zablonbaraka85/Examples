@@ -21,7 +21,7 @@ CSVFile ==
 \* this script and forks the nested instances of TLC that simulate the spec
 \* and collect the statistics.
 ASSUME 
-    CSVWrite("Variant#Node#Length#T#InitiateProbe#PassToken#SendMsg#RecvMsg#Deactivate",
+    CSVWrite("Variant#Node#Length#T#T2TD#InitiateProbe#PassToken#SendMsg#RecvMsg#Deactivate",
              <<>>, CSVFile)
 
 \* Command to fork nested TLC instances that simulate the spec and collect the

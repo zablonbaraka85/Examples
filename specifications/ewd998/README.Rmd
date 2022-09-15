@@ -120,7 +120,8 @@ summary = summarise(group_by(data,Variant, Node),
   mean_SM = mean(SendMsg), sd_SM = sd(SendMsg),
   mean_RM = mean(RecvMsg), sd_MR = sd(RecvMsg),
   mean_DA = mean(Deactivate), sd_DA = sd(Deactivate),
-  mean_T = mean(T), sd_T = sd(T)
+  mean_T = mean(T), sd_T = sd(T),
+  mean_T2TD = mean(T2TD), sd_T2TD = sd(T2TD)
 )
 Nodes <- unique(summary$Node)
 ```
@@ -131,9 +132,9 @@ Nodes <- unique(summary$Node)
 
 for (n in Nodes) {
  ## Ideally, filtering on Variant column would not rely on string matching.
- print(ggplot(filter(summary, !grepl('pt1|pt2', Variant), Node == n), aes(x = reorder(Variant, mean_T), y = mean_T, fill = Variant)) +
+ print(ggplot(filter(summary, !grepl('pt1|pt2', Variant), Node == n), aes(x = reorder(Variant, mean_T), y = mean_T2TD, fill = Variant)) +
    geom_bar(stat = "identity") +
-   geom_errorbar(aes(ymin=mean_T-sd_T, ymax=mean_T+sd_T), width=.2) +
+   geom_errorbar(aes(ymin=mean_T2TD-sd_T2TD, ymax=mean_T2TD+sd_T2TD), width=.2) +
    scale_x_discrete(guide = guide_axis(n.dodge=3))+
    theme_minimal() +
    labs(
