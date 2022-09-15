@@ -4,7 +4,7 @@ EXTENDS TLC, IOUtils, Naturals, Sequences, CSV
 Features ==
     \* Features is redundantly defined in EWD998_opts.tla.  Could be extracted
     \* into common EWD998_opts_frob.ta, though.
-    {"pt1","pt2","pt3","pt4"}
+    {"pt1","pt2","pt3","pt4","pt5"}
         
 Nodes ==
     {7,29,43}

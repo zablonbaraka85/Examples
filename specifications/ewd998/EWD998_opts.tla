@@ -35,11 +35,13 @@ ASSUME TLCGet("revision").timestamp >= 1628119427
 \* the initiator.  However, this would be trivially addressed by stamping the
 \* initiator's id onto the token.
 \*
+\* pt5: The initiator may only initiate a round when it is inactive.
+\*
 \* As we do not model a particular workload by constraining the behaviors
 \* satisfying  Environment, the TLC generator has to run long enough to create a
 \* sufficient amount of traces.
 FeatureFlags == 
-    {"pt1","pt2","pt3","pt4"}
+    {"pt1","pt2","pt3","pt4","pt5"}
 
 CONSTANT F
 ASSUME F \subseteq FeatureFlags
@@ -53,6 +55,10 @@ InitSim ==
     \* state where the system has e.g. already terminated.
     /\ active = [n \in Node |-> TRUE]
     /\ color = [n \in Node |-> "white"]
+
+InitiateProbeOpts ==
+    /\ IF "pt5" \in F THEN ~ active[0] ELSE TRUE
+    /\ InitiateProbe
 
 PassTokenOpts(i) ==
   /\ token.pos = i
@@ -70,7 +76,7 @@ PassTokenOpts(i) ==
   /\ UNCHANGED <<active, counter, pending>>
 
 SystemOpts ==
-    \/ InitiateProbe
+    \/ InitiateProbeOpts
     \/ \E i \in Node \ {0}: PassTokenOpts(i)
 
 SpecOpts ==
@@ -100,7 +106,7 @@ AtTerminationDetected ==
        IN \* Append record to CSV file on disk.
           /\ CSVWrite("%1$s#%2$s#%3$s#%4$s#%5$s#%6$s#%7$s#%8$s#%9$s#%10$s",
                << F, N, TLCGet("level"), TLCGet(1), TLCGet("level") - TLCGet(1), 
-                 o["InitiateProbe"],o["PassTokenOpts"], \* Note "Opts" suffix!
+                 o["InitiateProbeOpts"],o["PassTokenOpts"], \* Note "Opts" suffix!
                  o["SendMsg"],o["RecvMsg"],o["Deactivate"] >>,
                IOEnv.Out)
           \* Reset the counter for the next behavior.
