@@ -1,5 +1,5 @@
 ------------------------------- MODULE EWD998_opts -------------------------------
-EXTENDS EWD998, TLC, IOUtils, CSV
+EXTENDS EWD998, TLC, IOUtils, CSV, Randomization
 
 \* The data collection below only works with TLC running in generation mode.
 \* Unless TLC runs with -Dtlc2.tool.impl.Tool.probabilistic=true (or -generate),
@@ -53,8 +53,12 @@ InitSim ==
     \* those that correspond to what an implementation is likely to start with.
     \* In other words, when collecting statistics, we don't want to start in a
     \* state where the system has e.g. already terminated.
-    /\ active = [n \in Node |-> TRUE]
-    /\ color = [n \in Node |-> "white"]
+    \* /\ active \in [ Node -> BOOLEAN ]
+    \* /\ color \in [ Node -> Color ]\
+    \* The set of initial states is a random subset of the states defined by Init.
+    /\ active \in RandomSubset(1000, [Node -> BOOLEAN])
+    /\ color \in RandomSubset(1000, [Node -> Color])
+
 
 InitiateProbeOpts ==
     /\ IF "pt5" \in F THEN ~ active[0] ELSE TRUE
