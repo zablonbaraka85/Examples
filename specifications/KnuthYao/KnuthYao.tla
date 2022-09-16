@@ -1,5 +1,5 @@
 ----------------------------------------- MODULE KnuthYao -----------------------------------------
-EXTENDS Reals
+EXTENDS DyadicRationals
 
 VARIABLES p,     \* The probability we are here   
           state, \* The current state
@@ -10,9 +10,6 @@ vars == <<p, state, flip>>
 Done == {"1", "2", "3", "4", "5", "6"}
 Flip == { "H", "T" }
 
-One == 1
-Probability == { x \in Real : 0 <= x /\ x <= 1 }
-
 Transition == [s0 |-> [H |-> "s1", T |-> "s2"],
                s1 |-> [H |-> "s3", T |-> "s4"],
                s2 |-> [H |-> "s5", T |-> "s6"],
@@ -22,7 +19,7 @@ Transition == [s0 |-> [H |-> "s1", T |-> "s2"],
                s6 |-> [H |-> "6",  T |-> "s2"]]
 
 TossFairCoin == /\ flip' \in Flip
-                /\ p'    = p/2
+                /\ p'    = Half(p)
                 
 Init == /\ state = "s0"
         /\ p     = One
@@ -34,6 +31,7 @@ Next == /\ state  \notin Done
         
 Spec == Init /\ [][Next]_vars /\ WF_vars(Next)
 
-THEOREM Converges == \A e \in Probability \ {0} : Spec => <>(state \in Done \/ p < e) 
+\* TODO Uncomment once we have a definition of DyadicRationals!DyadicRationals as tracked in https://github.com/tlaplus/CommunityModules/issues/63
+\* THEOREM Converges == \A e \in DyadicRationals \ {0} : Spec => <>(state \in Done \/ p < e) 
 
 ====================================================================================================
