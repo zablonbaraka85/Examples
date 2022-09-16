@@ -11,7 +11,7 @@ ASSUME TLCGet("config").depth = -1
 \* The algorithm terminates. Thus, do not check for deadlocks.
 ASSUME TLCGet("config").deadlock = FALSE
 \* Require a recent versions of TLC with support for the operators appearing below.
-ASSUME TLCGet("revision").timestamp >= 1628119427 
+ASSUME TLCGet("revision").timestamp >= 1663391404
 
 --------------------------------------------------------------------------------
 
@@ -107,7 +107,11 @@ AtTerminationDetected ==
     \* A constraint's advantage is that it works with old versions of TLC.
     terminationDetected =>
     /\ LET o == TLCGet("stats").behavior.actions
-       IN \* Append record to CSV file on disk.
+       IN \* Validate statistics are sane.
+          /\ Assert(o["InitiateProbeOpts"] + o["PassTokenOpts"] + o["SendMsgOpts"] + o["RecvMsg"] +
+                    o["Deactivate"] = TLCGet("level") - 1, "Inconsistent action stats!")
+          /\ Assert(TLCGet("level") >= TLCGet(1), "Detection follows termination!")
+          \* Append record to CSV file on disk.
           /\ CSVWrite("%1$s#%2$s#%3$s#%4$s#%5$s#%6$s#%7$s#%8$s#%9$s#%10$s",
                << F, N, TLCGet("level"), TLCGet(1), TLCGet("level") - TLCGet(1), 
                  o["InitiateProbeOpts"],o["PassTokenOpts"], \* Note "Opts" suffix!

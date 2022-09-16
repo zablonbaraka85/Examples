@@ -55,3 +55,5 @@ ASSUME \A features \in SUBSET Features:
 \* If this approach proves useful, TLC should be extended to launch without a config
 \* file.
 ====
+
+$ tlc -config EWD998_optsSC.tla EWD998_optsSC.tla
