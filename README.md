@@ -101,6 +101,7 @@ Do you have your own case study that you like to share with the community? Send 
 | 88  | Parallel increment    | <a href="https://github.com/Cjen1/tla_increment">Parallel threads incrementing a shared variable. Demonstrates invariants, liveness, fairness and symmetry</a>  | Chris Jensen |             |                                                   &#10004;                                                    | Integers, FiniteSets, TLC              | | |
 | 89 | The Streamlet consensus algorithm | <a href="https://www.losa.fr/blog/streamlet-in-tla+">Specification and model-checking of both safety and liveness properties of Streamlet with TLC</a> | Giuliano Losa | | &#10004; | Sequences, Integers, FiniteSets | &#10004; | |
 | 90 | Petri Nets | <a href="https://github.com/elh/petri-tlaplus">Instantiable Petri Nets with liveness properties</a> | Eugene Huang | | &#10004; | Integers, Sequences, FiniteSets, TLC | |
+| 91 | Knuth Yao & Markov Chains | <a href="specifications/KnuthYao">Knuth-Yao algorithm for simulating a sixsided die</a> | Ron Pressler, Markus Kuppe | | &#10004; | DyadicRationals | |
 
 ## License
 
