@@ -50,7 +50,7 @@ Spec == Init /\ [][Next]_vars /\ WF_vars(Next)
 \* In "generate" mode, however, TLC randomly generates a (single) successor state.
 ASSUME TLCGet("config").mode = "generate"
 \* Do not artificially restrict the length of behaviors.
-ASSUME TLCGet("config").depth = 10
+ASSUME TLCGet("config").depth >= 10
 \* The algorithm terminates. Thus, do not check for deadlocks.
 ASSUME TLCGet("config").deadlock = FALSE
 \* Require a recent versions of TLC with support for the operators appearing below.
@@ -60,16 +60,16 @@ CSVFile ==
     "KnuthYao.csv"
 
 ASSUME 
-    CSVRecords(CSVFile) = 0 => CSVWrite("side", <<>>, CSVFile)
+    CSVRecords(CSVFile) = 0 => CSVWrite("side,p,flip", <<>>, CSVFile)
 
 Stats ==
     \* Cfg: CONSTRAINT Stats
     /\ state \in Done => 
-        /\ CSVWrite("%1$s", <<state>>, CSVFile)
+        /\ CSVWrite("%1$s,%2$s,%3$s", <<state, p.dem, flip>>, CSVFile)
         \* Update KnuthYao.svg every 100 samples.
         /\ TLCGet("stats").traces % 250 = 0 =>
             /\ IOExec(<<"/usr/bin/env", "Rscript", "KnuthYao.R", "KnuthYao.csv">>).exitValue = 0
 
 ====================================================================================================
 
-$ tlc KnuthYao -generate -depth 10
+$ rm *.csv ; tlc KnuthYao -generate -note -depth 10
