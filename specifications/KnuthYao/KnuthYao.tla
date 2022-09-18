@@ -22,8 +22,8 @@ Heads ==
     /\ flip' = "H"
 
 Tails ==
-    \* Crooked coin: 1/3 chance of a tail
-    /\ RandomElement(1..3) = 1
+    \* Crooked coin: Decreasing chance of a tail over time.
+    /\ RandomElement(1..p.dem) = 1
     /\ flip' = "T"
 
 TossFairCoin == /\ Heads \/ Tails
