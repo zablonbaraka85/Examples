@@ -83,8 +83,16 @@ SystemOpts ==
     \/ InitiateProbeOpts
     \/ \E i \in Node \ {0}: PassTokenOpts(i)
 
+SendMsgOpts(i) ==
+    \* Linearly decreasing probability over "time" of an (active) node to send a message.
+    /\ RandomElement(1..TLCGet("level")) = 1
+    /\ SendMsg(i)
+
+EnvironmentOpts ==
+    \E i \in Node : SendMsgOpts(i) \/ RecvMsg(i) \/ Deactivate(i)
+
 SpecOpts ==
-    InitSim /\ Init /\ [][SystemOpts \/ Environment]_vars
+    InitSim /\ Init /\ [][SystemOpts \/ EnvironmentOpts]_vars
 
 terminated ==
     \A n \in Node: ~active[n] /\ pending[n] = 0
@@ -95,11 +103,13 @@ terminated ==
 ASSUME TLCSet(1, 0)
 
 AtTermination ==
+    \* Cfg: ACTION_CONSTRAINT AtTermination
     IF terminated # terminated'
     THEN TLCSet(1, TLCGet("level"))
     ELSE TRUE
 
 AtTerminationDetected ==
+    \* Cfg: CONSTRAINT AtTerminationDetected
     \* This is just an ordinary state constraint (could have been an invariant 
     \* too).  The disadvantage of a constraint (or inv) is that the antecedent
     \* is evaluated for *every* generated state, instead of just after the last
@@ -115,7 +125,7 @@ AtTerminationDetected ==
           /\ CSVWrite("%1$s#%2$s#%3$s#%4$s#%5$s#%6$s#%7$s#%8$s#%9$s#%10$s",
                << F, N, TLCGet("level"), TLCGet(1), TLCGet("level") - TLCGet(1), 
                  o["InitiateProbeOpts"],o["PassTokenOpts"], \* Note "Opts" suffix!
-                 o["SendMsg"],o["RecvMsg"],o["Deactivate"] >>,
+                 o["SendMsgOpts"],o["RecvMsg"],o["Deactivate"] >>,
                IOEnv.Out)
           \* Reset the counter for the next behavior.
           /\ TLCSet(1, 0)

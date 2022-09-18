@@ -88,12 +88,12 @@ for (n in Nodes) {
 ########
 for (n in Nodes) {
   print(ggplot(filter(summary, Node == n)) + 
-  geom_point(aes(x=reorder(Variant, mean_PT), y = mean_PT,colour = "PassToken",shape = "PassToken")) + 
-  geom_point(aes(x=reorder(Variant, mean_IP),y=mean_IP,colour = "InitiateProbe",shape = "InitiateProbe")) +
+  geom_point(aes(x=reorder(Variant, mean_PT), y = mean_PT,size=5,colour = "PassToken",shape = "PassToken")) + 
+  geom_point(aes(x=reorder(Variant, mean_IP),y=mean_IP,size=5,colour = "InitiateProbe",shape = "InitiateProbe")) +
   #  geom_point(aes(x=Variant,y=mean_IP,colour = "InitiateProbe",shape = "InitiateProbe")) +
-  geom_point(aes(x=reorder(Variant, mean_SM),y=mean_SM,colour = "SendMsg",shape = "SendMsg")) +
-  geom_point(aes(x=reorder(Variant, mean_RM),y=mean_RM,colour = "RecvMsg",shape = "RecvMsg")) +
-  geom_point(aes(x=reorder(Variant, mean_DA),y=mean_DA,colour = "Deactivate",shape = "Deactivate")) +
+  geom_point(aes(x=reorder(Variant, mean_SM),y=mean_SM,size=5,colour = "SendMsg",shape = "SendMsg")) +
+  geom_point(aes(x=reorder(Variant, mean_RM),y=mean_RM,size=5,colour = "RecvMsg",shape = "RecvMsg")) +
+  geom_point(aes(x=reorder(Variant, mean_DA),y=mean_DA,size=5,colour = "Deactivate",shape = "Deactivate")) +
   ## x-axis labels should not overlap.
   scale_x_discrete(guide = guide_axis(n.dodge=3))+
   #scale_x_discrete(guide = guide_axis(check.overlap = TRUE))+
