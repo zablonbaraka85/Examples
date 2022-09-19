@@ -23,7 +23,7 @@ Heads ==
 
 Tails ==
     \* Crooked coin: Decreasing chance of a tail over time.
-    /\ RandomElement(1..p.dem) = 1
+    /\ RandomElement(1..p.den) = 1
     /\ flip' = "T"
 
 TossFairCoin == /\ Heads \/ Tails
@@ -65,7 +65,7 @@ ASSUME
 Stats ==
     \* Cfg: CONSTRAINT Stats
     /\ state \in Done => 
-        /\ CSVWrite("%1$s,%2$s,%3$s", <<state, p.dem, flip>>, CSVFile)
+        /\ CSVWrite("%1$s,%2$s,%3$s", <<state, p.den, flip>>, CSVFile)
         \* Update KnuthYao.svg every 100 samples.
         /\ TLCGet("stats").traces % 250 = 0 =>
             /\ IOExec(<<"/usr/bin/env", "Rscript", "KnuthYao.R", "KnuthYao.csv">>).exitValue = 0
