@@ -9,7 +9,6 @@ StatelessCrookedCoin ==
             \* /\ p' = Reduce([ num |-> p.num * 3, den |-> p.den * 8 ])
        ELSE /\ flip' = "H"
             \* /\ p' = Reduce([ num |-> p.num * 5, den |-> p.den * 8 ])
-    /\ UNCHANGED p
     \* Statistically, modeling the crooked coin with a disjunct is the same, 
     \* but the generator won't extend the behavior if both disjuncts evaluate
     \* to false. Confirm by running the generator with a fixed number of traces
@@ -18,13 +17,11 @@ StatelessCrookedCoin ==
     \*       /\ flip' = "H"
     \*    \/ /\ RandomElement(1..10) \in 1..3
     \*       /\ flip' = "T"
-    \* /\ UNCHANGED p
 
 ----------------------------------------------------------------------------------------------------
 
 StatefulCrookedCoin ==
     \* Crooked coin: Decreasing chance of a tail over time.
-    /\ p' = Half(p)
     /\ IF RandomElement(1..p.den) = 1 
        THEN flip' = "T"
        ELSE flip' = "H"
@@ -41,11 +38,13 @@ SimNext ==
     \* the first flip will always be fair. 
     \/ /\ state = "init"
        /\ state' = "s0"
-       /\ TossFairCoin
+       /\ UNCHANGED p
+       /\ TossCoin
     \/ /\ state # "init"
        /\ state  \notin Done
        /\ state' = Transition[state][flip]
-       /\ TossFairCoin
+       /\ p' = Half(p)
+       /\ TossCoin
 
 IsDyadic ==
     \* This is expensive to evaluate with TLC.
@@ -82,6 +81,8 @@ Stats ==
         /\ TLCGet("stats").traces % 250 = 0 =>
             /\ IOExec(<<"/usr/bin/env", "Rscript", "SimKnuthYao.R", CSVFile>>).exitValue = 0
 
+----------------------------------------------------------------------------------------------------
+
 PostCondition ==
     \* Cfg: POSTCONDITION PostCondition
     LET uniform == [ i \in 1..6 |-> 6 ]
@@ -92,4 +93,4 @@ PostCondition ==
 
 ====================================================================================================
 
-$ rm *.csv ; tlc SimKnuthYao -generate -note -depth -1
+$ rm *.csv ; tlc SimKnuthYao -note -generate -depth -1

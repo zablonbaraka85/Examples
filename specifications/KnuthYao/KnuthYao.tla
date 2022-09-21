@@ -18,8 +18,7 @@ Transition == [s0 |-> [H |-> "s1", T |-> "s2"],
                s5 |-> [H |-> "4",  T |-> "5" ],
                s6 |-> [H |-> "6",  T |-> "s2"]]
 
-TossFairCoin == /\ flip' \in Flip
-                /\ p'    = Half(p)
+TossCoin == flip' \in Flip
                 
 Init == /\ state = "s0"
         /\ p     = One
@@ -27,7 +26,8 @@ Init == /\ state = "s0"
 
 Next == /\ state  \notin Done
         /\ state' = Transition[state][flip]
-        /\ TossFairCoin
+        /\ p' = Half(p)
+        /\ TossCoin
         
 Spec == Init /\ [][Next]_vars /\ WF_vars(Next)
 
