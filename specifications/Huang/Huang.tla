@@ -114,7 +114,7 @@ THEOREM Spec => Live
 
 StateConstraint ==
     \* Prevent the weights from halving towards infinity.
-    \A p \in Procs : weight[p].dem <= 8
+    \A p \in Procs : weight[p].den <= 8
 
 Alias ==
     [
