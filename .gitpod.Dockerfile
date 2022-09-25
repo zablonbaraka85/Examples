@@ -1,6 +1,6 @@
 FROM gitpod/workspace-full-vnc
 RUN sudo apt-get update && \
-    sudo apt-get install -y graphviz htop
+    sudo apt-get install -y graphviz htop openjdk-11-jre-headless
 
 RUN wget https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/TLAToolbox-1.8.0.deb && \
     sudo dpkg -i TLAToolbox-1.8.0.deb

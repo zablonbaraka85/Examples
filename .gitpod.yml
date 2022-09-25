@@ -21,7 +21,4 @@ github:
     
 vscode:
   extensions:
-    - alygin.vscode-tlaplus
-    - tintinweb.graphviz-interactive-preview
-    - cssho.vscode-svgviewer
     - tomoki1207.pdf
