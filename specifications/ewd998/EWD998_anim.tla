@@ -9,6 +9,15 @@ SPECIFICATION
 ALIAS
     Alias
 
+\* HowTo Graphical Debugging (https://youtu.be/IO9ik850i0M):
+\* - Uncomment ACTION_CONSTRAINT  ToSVG  and comment INVARIANT  AnimInv  instead
+\* - Remove prime from  plsN  in  Messages (no double-priming allowed in TLA+)
+\* - Remove ", Solid: Arrival in next" from  Labels (makes no sense in this mode)
+\* - Run TLC with "-config EWD998_anim.tla EWD998_anim -simulate -note -debugger"
+\* - Attach the VSCode debugger to the running TLC process
+\* ACTION_CONSTRAINT
+\*     ToSVG
+
 INVARIANT 
     AnimInv
 ==================================================================================
@@ -104,6 +113,14 @@ Animation == SVGElemToString(Group(<<Labels, RingNetwork, TokenNetwork, Messages
 \* This is just the arrow head that's used by the Message definition above as an attribute.
 Defs ==
     "<defs><marker id='arrow' markerWidth='15' markerHeight='15' refX='0' refY='3' orient='auto' markerUnits='strokeWidth' viewBox='0 0 20 20'><path d='M0,0 L0,6 L9,3 z' fill='orange' /></marker></defs>"
+
+ToSVG ==
+    IOExecTemplate(
+            <<"bash", "-c", "echo \"%1$s\" > EWD998_anim.svg">>,
+                <<"<svg viewBox='-40 15 330 290'>"
+                    \o Defs
+                    \o Animation'  \* Note the prime here!
+                >>).exitValue = 0
 
 Alias == [ 
     toolbox |-> Defs \o Animation,
