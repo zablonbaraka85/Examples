@@ -1,5 +1,10 @@
 ----------------------------- MODULE clean -----------------------------
-(* what polymerase chain reaction is, and not how it works *)
+
+\* This is the basic picture of PCR; see the README for details.
+\* The high heat denatures DNA; low heat allows annealing.
+\* Then medium heat allows extension, and the process repeats.
+\* The goal is to produce more DNA, but just any DNA? No!
+\* See refinements in "stages.tla" and "product.tla".
 
 EXTENDS Naturals \* an import - copies module in there
 
@@ -33,7 +38,7 @@ anneal == /\ tee = "Hot" \* too hot to anneal primers
           /\ tee' = "Warm" \* "Warm" is just right
           /\ UNCHANGED dna \* dna can reanneal; we neglect that
           (* this is the neat part *)
-          /\ \E k \in 1..natMin(primer, template) : \* tweak this - tweaked
+          /\ \E k \in 1..natMin(primer, template) : 
              /\ primer' = primer - k \* k consumed
              /\ template' = template - k \* k consumed
              /\ hybrid' = hybrid + k \* k more hybrids

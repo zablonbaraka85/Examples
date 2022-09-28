@@ -1,5 +1,9 @@
 ---------------------------- MODULE product ----------------------------
-(* we need higher resolution - adding stages & cycles *)
+
+\* Now that we can cycle properly and also count...
+\* let's look at the actual "product" of the process.
+\* This requires more variables, for a hi-res view.
+
 
 EXTENDS Naturals, Sequences \* imports
 

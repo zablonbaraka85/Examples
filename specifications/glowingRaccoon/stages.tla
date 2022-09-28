@@ -1,5 +1,11 @@
  ----------------------------- MODULE stages -----------------------------
-(* we need higher resolution - adding stages & cycles *)
+
+\* The basic spec allowed senseless thermal changes.
+\* You can think of "stage" as a history variable.
+\* The previous action now dictates the next.
+\* (and we can now show that primers get depleted, eventually)
+\* This further enables us to count (legitimate) cycles of PCR.
+\* (hence the new "cycle" variable)
 
 EXTENDS Naturals \* an import
 
