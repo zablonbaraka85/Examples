@@ -1,7 +1,7 @@
 ----------------------------- MODULE clean -----------------------------
 
 \* PCR amplifies a desired snippet of DNA.
-\* This is the basic picture of PCR.
+\* This is the basic picture of PCR:
 \* High heat denatures DNA, producing single-stranded templates. 
 \* Lower heat allows annealing of primers to sites on templates.
 \* (Primers are carefully chosen for this purpose.)
@@ -11,6 +11,15 @@
 \* The whole cyle repeats, yield S-curve growth of the product.
 \* The goal is to produce more DNA, but just any DNA? No!
 \* See refinements in "stages.tla" and "product.tla".
+
+\* Many factors contribute to successful PCR.
+\* Most of them are neglected here.
+\* In particular, nucleotides are just assumed to be there.
+\* Two different types of primer are required.
+\* (our spec allows for this; further refinement could distinguish)
+\* Extension is assumed to happen to available hybrids.
+\* Temporal Logic of Actions is not the perfect tool for this!
+\* Hopefully, the exercise is worthwhile.
 
 EXTENDS Naturals \* an import - copies module in there
 
