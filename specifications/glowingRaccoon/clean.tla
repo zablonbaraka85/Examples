@@ -1,8 +1,14 @@
 ----------------------------- MODULE clean -----------------------------
 
-\* This is the basic picture of PCR; see the README for details.
-\* The high heat denatures DNA; low heat allows annealing.
-\* Then medium heat allows extension, and the process repeats.
+\* PCR amplifies a desired snippet of DNA.
+\* This is the basic picture of PCR.
+\* High heat denatures DNA, producing single-stranded templates. 
+\* Lower heat allows annealing of primers to sites on templates.
+\* (Primers are carefully chosen for this purpose.)
+\* Hybrids are produced by annealing at this lower temperature.
+\* Polymerase attaches to hybrids and extends them to new DNA.
+\* Extension occurs at medium heat, between annealing and denaturing. 
+\* The whole cyle repeats, yield S-curve growth of the product.
 \* The goal is to produce more DNA, but just any DNA? No!
 \* See refinements in "stages.tla" and "product.tla".
 
