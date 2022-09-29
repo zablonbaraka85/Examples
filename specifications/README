@@ -26,6 +26,9 @@ ewd840
    and van Gasteren for detecting distributed termination on a
    unidirectional ring, together with a safety proof.
 
+glowingRaccoon
+   A specification of PCR using refinement mapping in TLA+.
+
 lamport_mutex
    A TLA+ specification of the distributed mutual-exclusion
    algorithm that appeared as an example in Lamport's classic
