@@ -1,4 +1,4 @@
- ----------------------------- MODULE stages -----------------------------
+----------------------------- MODULE stages -----------------------------
 
 \* The basic spec allowed senseless thermal changes.
 \* You can think of "stage" as a history variable.
@@ -80,11 +80,22 @@ Next == \/ heat
 (* system spec *)
 Spec == /\ Init 
         /\ [][Next]_vars 
-        /\ SF_vars(anneal) 
-        /\ SF_vars(heat)
-        /\ SF_vars(cool)
-        /\ SF_vars(extend)
+        /\ WF_vars(anneal) 
+        /\ WF_vars(heat)
+        /\ WF_vars(cool)
+        /\ WF_vars(extend)
 
+(* type invariant *)
+TypeOK == 
+    /\ tee \in {"Warm", "Hot", "TooHot"}
+    /\ primer \in Nat
+    /\ dna \in Nat
+    /\ template \in Nat
+    /\ hybrid \in Nat
+    /\ stage \in {"init","ready","annealed","extended","denatured"}
+    /\ cycle \in Nat
+
+(* instance of clean *)
 cleanInstance == INSTANCE clean
 cleanSpec == cleanInstance!Spec
 primerDepleted == cleanInstance!primerDepleted

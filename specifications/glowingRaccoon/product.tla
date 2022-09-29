@@ -9,10 +9,10 @@ EXTENDS Naturals, Sequences \* imports
 
 CONSTANTS DNA, PRIMER \* starting stock of key things
 
-VARIABLES tee, \* temperature
-          stage, \* new arrival - a history of sorts
-          cycle, \* now we can count...!
-          primer, \* as before
+VARIABLES tee, 
+          stage, 
+          cycle, 
+          primer, 
           (* and single-stranded templates *)
           longTemplate,
           shortTemplate,
@@ -166,10 +166,30 @@ Next == \/ heat
 (* system spec *)
 Spec == /\ Init 
         /\ [][Next]_vars 
-        /\ SF_vars(anneal) 
-        /\ SF_vars(heat)
-        /\ SF_vars(cool)
-        /\ SF_vars(extend)
+        /\ WF_vars(anneal) 
+        /\ WF_vars(heat)
+        /\ WF_vars(cool)
+        /\ WF_vars(extend)
+
+(* type invariant *)
+TypeOK == 
+    /\ tee \in {"Warm", "Hot", "TooHot"}
+    /\ primer \in Nat
+    /\ dna \in Nat
+    /\ template \in Nat
+    /\ hybrid \in Nat
+    /\ stage \in {"init","ready","annealed","extended","denatured"}
+    /\ cycle \in Nat
+    /\ longTemplate \in Nat
+    /\ shortTemplate \in Nat
+    /\ tinyTemplate \in Nat
+    /\ longHybrid \in Nat
+    /\ shortHybrid \in Nat
+    /\ tinyHybrid \in Nat
+    /\ longLongDouble \in Nat
+    /\ shortLongDouble \in Nat
+    /\ tinyShortDouble \in Nat          
+    /\ product \in Nat
 
 (* safety *)
 thirdCycleProduct == ((cycle < 3) => (product = 0))

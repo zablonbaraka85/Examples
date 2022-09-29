@@ -81,11 +81,23 @@ Next ==  \/ heat
 Spec == /\ Init 
         /\ [][Next]_vars 
 
-(* safety *)
-primerPositive == (primer >= 0) \* an invariant
+(* type invariant *)
+TypeOK == 
+    /\ tee \in {"Warm", "Hot", "TooHot"}
+    /\ primer \in Nat
+    /\ dna \in Nat
+    /\ template \in Nat
+    /\ hybrid \in Nat
 
+(* safety *)
+primerPositive == (primer >= 0) \* a redundant invariant
+
+(* preservation as an invariant *)
+preservationInvariant == template + primer + 2*(dna + hybrid) = PRIMER + 2 * DNA
+
+(* preservation as a property *)
 constantCount == UNCHANGED ( template + primer + 2*(dna + hybrid) )
-strandInvariant == [][constantCount]_vars \* a property
+preservationProperty == [][constantCount]_vars \* as property
 
 (* liveness *)
 primerDepleted == <>(primer = 0) \* does not hold!
