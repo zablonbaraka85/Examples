@@ -1,10 +1,4 @@
 -------------------------- MODULE SingleLaneBridge --------------------------
-
-\* A bridge over a river is only wide enough to permit a single lane of traffic.
-\* Consequently, cars can only move concurrently if they are moving in the same 
-\* direction. A safety violation occurs if two cars moving in different directions
-\* enter the bridge at the same time.
-\* To visualize the problem, refer to https://flylib.com/books/en/2.752.1.48/1/
    
 EXTENDS Naturals, FiniteSets, Sequences
 
